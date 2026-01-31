@@ -6,7 +6,7 @@
  */
 ?>
 
-<article id="post-<?php the_ID(); ?>" <?php post_class( 'featured-card' ); ?>>
+<article id="post-<?php the_ID(); ?>" <?php post_class( 'featured-card featured-card--dual' ); ?>>
 	<div class="featured-media">
 		<?php if ( has_post_thumbnail() ) : ?>
 			<a href="<?php the_permalink(); ?>" aria-hidden="true" tabindex="-1">

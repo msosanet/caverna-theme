@@ -18,55 +18,44 @@ get_header();
 	<main id="primary" class="site-main">
 
 		<?php
+		$principal_term = get_category_by_slug( 'principal' );
+		if ( ! $principal_term ) {
+			$principal_term = get_term_by( 'name', 'Principal', 'category' );
+		}
+
 		$featured_term = get_category_by_slug( 'destacados' );
 		if ( ! $featured_term ) {
 			$featured_term = get_term_by( 'name', 'Destacados', 'category' );
 		}
 
-		$featured_ids   = array();
-		$featured_query = null;
+		$featured_ids     = array();
+		$principal_query  = null;
+		$secondary_query  = null;
 
-		if ( $featured_term ) {
-			$featured_query = new WP_Query(
+		if ( $principal_term ) {
+			$principal_query = new WP_Query(
 				array(
 					'post_type'           => 'post',
-					'posts_per_page'      => 4,
-					'cat'                 => (int) $featured_term->term_id,
+					'posts_per_page'      => 2,
+					'cat'                 => (int) $principal_term->term_id,
 					'ignore_sticky_posts' => 1,
 				)
 			);
 		}
 
-		if ( $featured_query && $featured_query->have_posts() ) :
+		if ( $principal_query && $principal_query->have_posts() ) :
 			?>
 			<section class="home-featured content-layout">
 				<?php
 				$counter        = 0;
-				$secondary_open = false;
 
-				while ( $featured_query->have_posts() ) :
-					$featured_query->the_post();
+				while ( $principal_query->have_posts() ) :
+					$principal_query->the_post();
 					$counter++;
 					$featured_ids[] = get_the_ID();
 
-					if ( 1 === $counter ) :
-						get_template_part( 'template-parts/content', 'featured' );
-					else :
-						if ( ! $secondary_open ) :
-							$secondary_open = true;
-							?>
-							<div class="secondary-grid">
-							<?php
-						endif;
-						get_template_part( 'template-parts/content', 'secondary' );
-					endif;
+					get_template_part( 'template-parts/content', 'featured' );
 				endwhile;
-
-				if ( $secondary_open ) :
-					?>
-					</div>
-					<?php
-				endif;
 				?>
 			</section>
 			<?php
@@ -74,13 +63,44 @@ get_header();
 
 		wp_reset_postdata();
 
-		if ( is_active_sidebar( 'ad-home-top' ) ) : ?>
+		if ( $featured_term ) {
+			$secondary_query = new WP_Query(
+				array(
+					'post_type'           => 'post',
+					'posts_per_page'      => 3,
+					'cat'                 => (int) $featured_term->term_id,
+					'post__not_in'        => $featured_ids,
+					'ignore_sticky_posts' => 1,
+				)
+			);
+		}
+
+		if ( $secondary_query && $secondary_query->have_posts() ) :
+			?>
+			<section class="home-featured content-layout">
+				<div class="secondary-grid">
+					<?php
+					while ( $secondary_query->have_posts() ) :
+						$secondary_query->the_post();
+						$featured_ids[] = get_the_ID();
+						get_template_part( 'template-parts/content', 'secondary' );
+					endwhile;
+					?>
+				</div>
+			</section>
+			<?php
+		endif;
+
+		wp_reset_postdata();
+
+		if ( is_active_sidebar( 'ad-home-top' ) ) :
+			?>
 			<section class="home-ad content-layout">
 				<?php dynamic_sidebar( 'ad-home-top' ); ?>
 			</section>
-		<?php endif; ?>
+			<?php
+		endif;
 
-		<?php
 		$paged = max( 1, (int) get_query_var( 'paged' ) );
 		$latest_query = new WP_Query(
 			array(
@@ -104,18 +124,48 @@ get_header();
 					<div class="ad-banner ad-banner--leaderboard">
 						<?php echo $leaderboard_pick; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 					</div>
-				<?php elseif ( is_customize_preview() ) : ?>
+					<?php
+				elseif ( is_customize_preview() ) :
+					?>
 					<div class="ad-placeholder ad-placeholder--leaderboard" aria-hidden="true">
 						Espacio publicidad (728x90)
 					</div>
-				<?php endif; ?>
+					<?php
+				endif;
+				?>
+
 				<h2 class="section-title"><?php esc_html_e( 'Ultimas entradas', 'caverna' ); ?></h2>
 				<div class="latest-list">
 					<?php
 					if ( $latest_query->have_posts() ) :
+						$latest_count = 0;
 						while ( $latest_query->have_posts() ) :
 							$latest_query->the_post();
+							$latest_count++;
 							get_template_part( 'template-parts/content', 'list' );
+
+							if ( 0 === $latest_count % 5 ) :
+								$inline_ad     = get_theme_mod( 'caverna_home_inline_ad', '' );
+								$inline_ad_own = get_theme_mod( 'caverna_home_inline_ad_own', '' );
+								$inline_pick   = caverna_pick_ad( $inline_ad, $inline_ad_own );
+								if ( ! empty( $inline_pick ) ) :
+									?>
+									<div class="home-ad">
+										<div class="ad-banner ad-banner--leaderboard">
+											<?php echo $inline_pick; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+										</div>
+									</div>
+									<?php
+								elseif ( is_customize_preview() ) :
+									?>
+									<div class="home-ad">
+										<div class="ad-placeholder ad-placeholder--leaderboard" aria-hidden="true">
+											Espacio publicidad (728x90)
+										</div>
+									</div>
+									<?php
+								endif;
+							endif;
 						endwhile;
 					else :
 						get_template_part( 'template-parts/content', 'none' );
@@ -134,17 +184,23 @@ get_header();
 							<?php echo $inline_pick; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 						</div>
 					</section>
-				<?php elseif ( is_active_sidebar( 'ad-home-inline' ) ) : ?>
+					<?php
+				elseif ( is_active_sidebar( 'ad-home-inline' ) ) :
+					?>
 					<section class="home-ad">
 						<?php dynamic_sidebar( 'ad-home-inline' ); ?>
 					</section>
-				<?php elseif ( is_customize_preview() ) : ?>
+					<?php
+				elseif ( is_customize_preview() ) :
+					?>
 					<section class="home-ad">
 						<div class="ad-placeholder ad-placeholder--leaderboard" aria-hidden="true">
 							Espacio publicidad (728x90)
 						</div>
 					</section>
-				<?php endif; ?>
+					<?php
+				endif;
+				?>
 
 				<?php
 				if ( $latest_query->max_num_pages > 1 ) {
@@ -172,3 +228,4 @@ get_header();
 
 <?php
 get_footer();
+?>
