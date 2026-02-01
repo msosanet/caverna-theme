@@ -426,6 +426,7 @@ h4,
 h5,
 h6 {
 	clear: both;
+	letter-spacing: 0.02em;
 }
 
 p {
@@ -1008,6 +1009,44 @@ textarea {
 	text-transform: uppercase;
 	border-left: 4px solid var(--color-accent);
 	padding-left: 0.75rem;
+}
+
+.single .entry-title,
+.page .entry-title,
+.archive .page-title,
+.search .page-title {
+	margin: 0 0 1rem;
+	font-size: 1.8rem;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	border-left: 4px solid var(--color-accent);
+	padding-left: 0.75rem;
+}
+
+.entry-content h2 {
+	margin: 2rem 0 1rem;
+	font-size: 1.4rem;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	border-left: 3px solid var(--color-accent);
+	padding-left: 0.6rem;
+}
+
+.entry-content h1,
+.entry-content h3 {
+	margin: 2rem 0 1rem;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	border-left: 3px solid var(--color-accent);
+	padding-left: 0.6rem;
+}
+
+.entry-content h1 {
+	font-size: 1.7rem;
+}
+
+.entry-content h3 {
+	font-size: 1.2rem;
 }
 
 .latest-list {
