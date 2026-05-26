@@ -20,7 +20,7 @@
 
 		wp_link_pages(
 			array(
-				'before' => '<div class="page-links">' . esc_html__( 'Pages:', 'caverna' ),
+				'before' => '<div class="page-links">' . esc_html__( 'Paginas:', 'caverna' ),
 				'after'  => '</div>',
 			)
 		);
@@ -34,7 +34,7 @@
 				sprintf(
 					wp_kses(
 						/* translators: %s: Name of current post. Only visible to screen readers */
-						__( 'Edit <span class="screen-reader-text">%s</span>', 'caverna' ),
+						__( 'Editar <span class="screen-reader-text">%s</span>', 'caverna' ),
 						array(
 							'span' => array(
 								'class' => array(),

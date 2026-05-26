@@ -11,7 +11,7 @@
 
 <section class="no-results not-found">
 	<header class="page-header">
-		<h1 class="page-title"><?php esc_html_e( 'Nothing Found', 'caverna' ); ?></h1>
+		<h1 class="page-title"><?php esc_html_e( 'No encontramos contenido', 'caverna' ); ?></h1>
 	</header><!-- .page-header -->
 
 	<div class="page-content">
@@ -21,7 +21,7 @@
 			printf(
 				'<p>' . wp_kses(
 					/* translators: 1: link to WP admin new post page. */
-					__( 'Ready to publish your first post? <a href="%1$s">Get started here</a>.', 'caverna' ),
+					__( 'Listo para publicar la primera entrada? <a href="%1$s">Empeza aca</a>.', 'caverna' ),
 					array(
 						'a' => array(
 							'href' => array(),
@@ -34,14 +34,14 @@
 		elseif ( is_search() ) :
 			?>
 
-			<p><?php esc_html_e( 'Sorry, but nothing matched your search terms. Please try again with some different keywords.', 'caverna' ); ?></p>
+			<p><?php esc_html_e( 'No hubo resultados para esa busqueda. Proba con otras palabras.', 'caverna' ); ?></p>
 			<?php
 			get_search_form();
 
 		else :
 			?>
 
-			<p><?php esc_html_e( 'It seems we can&rsquo;t find what you&rsquo;re looking for. Perhaps searching can help.', 'caverna' ); ?></p>
+			<p><?php esc_html_e( 'No pudimos encontrar lo que buscabas. La busqueda puede ayudar.', 'caverna' ); ?></p>
 			<?php
 			get_search_form();
 

@@ -15,7 +15,7 @@
 get_header();
 ?>
 
-	<div class="content-layout">
+	<div class="content-layout content-layout--narrow">
 		<main id="primary" class="site-main">
 
 		<?php
@@ -33,8 +33,6 @@ get_header();
 		?>
 
 		</main><!-- #main -->
-
-		<?php get_sidebar(); ?>
 	</div>
 
 <?php

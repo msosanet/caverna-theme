@@ -23,7 +23,6 @@ if ( post_password_required() ) {
 <div id="comments" class="comments-area">
 
 	<?php
-	// You can start editing here -- including this comment!
 	if ( have_comments() ) :
 		?>
 		<h2 class="comments-title">
@@ -32,13 +31,13 @@ if ( post_password_required() ) {
 			if ( '1' === $caverna_comment_count ) {
 				printf(
 					/* translators: 1: title. */
-					esc_html__( 'One thought on &ldquo;%1$s&rdquo;', 'caverna' ),
+					esc_html__( 'Un comentario en &ldquo;%1$s&rdquo;', 'caverna' ),
 					'<span>' . wp_kses_post( get_the_title() ) . '</span>'
 				);
 			} else {
 				printf( 
 					/* translators: 1: comment count number, 2: title. */
-					esc_html( _nx( '%1$s thought on &ldquo;%2$s&rdquo;', '%1$s thoughts on &ldquo;%2$s&rdquo;', $caverna_comment_count, 'comments title', 'caverna' ) ),
+					esc_html( _nx( '%1$s comentario en &ldquo;%2$s&rdquo;', '%1$s comentarios en &ldquo;%2$s&rdquo;', $caverna_comment_count, 'comments title', 'caverna' ) ),
 					number_format_i18n( $caverna_comment_count ), // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 					'<span>' . wp_kses_post( get_the_title() ) . '</span>'
 				);
@@ -65,7 +64,7 @@ if ( post_password_required() ) {
 		// If comments are closed and there are comments, let's leave a little note, shall we?
 		if ( ! comments_open() ) :
 			?>
-			<p class="no-comments"><?php esc_html_e( 'Comments are closed.', 'caverna' ); ?></p>
+			<p class="no-comments"><?php esc_html_e( 'Los comentarios estan cerrados.', 'caverna' ); ?></p>
 			<?php
 		endif;
 

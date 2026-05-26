@@ -10,7 +10,7 @@
 get_header();
 ?>
 
-	<div class="content-layout">
+	<div class="content-layout content-layout--split">
 		<main id="primary" class="site-main">
 
 		<?php if ( have_posts() ) : ?>

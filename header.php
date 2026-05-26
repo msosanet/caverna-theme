@@ -55,7 +55,7 @@
 					array(
 						'theme_location' => 'menu-1',
 						'menu_id'        => 'primary-menu',
-						'fallback_cb'    => false,
+						'fallback_cb'    => 'caverna_primary_menu_fallback',
 					)
 				);
 				?>

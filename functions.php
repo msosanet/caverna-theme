@@ -214,7 +214,7 @@ function caverna_default_ad( $format = 'horizontal' ) {
 	$horizontal  = get_template_directory_uri() . '/assets/ads/publicite-aqui-horizontal.png';
 	$vertical    = get_template_directory_uri() . '/assets/ads/publicite-aqui-vertical.png';
 	$class       = $is_vertical ? 'caverna-house-ad--vertical' : 'caverna-house-ad--horizontal';
-	$mailto      = sanitize_email( get_option( 'admin_email' ) );
+	$ad_url      = caverna_advertising_url();
 	$image       = sprintf(
 		'<img src="%1$s" alt="%2$s" loading="eager" decoding="async" fetchpriority="high">',
 		esc_url( $is_vertical ? $vertical : $horizontal ),
@@ -234,12 +234,50 @@ function caverna_default_ad( $format = 'horizontal' ) {
 	}
 
 	return sprintf(
-		'<a class="caverna-house-ad %1$s" href="mailto:%2$s?subject=%3$s">%4$s</a>',
+		'<a class="caverna-house-ad %1$s" href="%2$s">%3$s</a>',
 		esc_attr( $class ),
-		esc_attr( $mailto ),
-		rawurlencode( __( 'Quiero publicitar en Caverna Radio', 'caverna' ) ),
+		esc_url( $ad_url ),
 		$image
 	);
+}
+
+/**
+ * Get the advertising landing page URL, falling back to email.
+ *
+ * @return string
+ */
+function caverna_advertising_url() {
+	$page = get_page_by_path( 'publicite-con-nosotros' );
+
+	if ( $page instanceof WP_Post && 'publish' === $page->post_status ) {
+		return get_permalink( $page );
+	}
+
+	return 'mailto:' . sanitize_email( get_option( 'admin_email' ) ) . '?subject=' . rawurlencode( __( 'Quiero publicitar en Caverna Radio', 'caverna' ) );
+}
+
+/**
+ * Render a compact primary menu when no WordPress menu is assigned.
+ *
+ * @return void
+ */
+function caverna_primary_menu_fallback() {
+	?>
+	<ul id="primary-menu" class="menu">
+		<li><a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php esc_html_e( 'Inicio', 'caverna' ); ?></a></li>
+		<?php $advertising_page = get_page_by_path( 'publicite-con-nosotros' ); ?>
+		<?php
+		wp_list_pages(
+			array(
+				'title_li' => '',
+				'depth'    => 1,
+				'exclude'  => $advertising_page instanceof WP_Post ? (string) $advertising_page->ID : '',
+			)
+		);
+		?>
+		<li><a href="<?php echo esc_url( caverna_advertising_url() ); ?>"><?php esc_html_e( 'Publicite', 'caverna' ); ?></a></li>
+	</ul>
+	<?php
 }
 
 /**
