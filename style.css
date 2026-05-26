@@ -1674,6 +1674,52 @@ textarea {
 	color: var(--color-muted);
 }
 
+.contact-page {
+	padding-top: 0.5rem;
+}
+
+.contact-hero,
+.contact-grid {
+	border-top: 1px solid rgba(240, 0, 184, 0.22);
+}
+
+.contact-hero__content {
+	max-width: 760px;
+}
+
+.contact-hero h1 {
+	margin: 0 0 1rem;
+	font-size: clamp(2.2rem, 6vw, 4.6rem);
+	line-height: 0.95;
+	text-transform: uppercase;
+}
+
+.contact-hero p {
+	max-width: 68ch;
+	color: var(--color-muted);
+}
+
+.contact-grid {
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.contact-grid article {
+	padding: 1.25rem;
+	border: 1px solid rgba(240, 0, 184, 0.28);
+	border-radius: 8px;
+	background: rgba(240, 0, 184, 0.06);
+}
+
+.contact-grid h2 {
+	margin: 0 0 0.75rem;
+	font-size: 1.2rem;
+	text-transform: uppercase;
+}
+
+.contact-grid p {
+	color: var(--color-muted);
+}
+
 .newsletter-signup {
 	margin-top: 1rem;
 	border-top: 1px solid rgba(240, 0, 184, 0.22);
@@ -1776,22 +1822,26 @@ textarea {
 	}
 
 	.advertising-hero__content,
+	.contact-hero__content,
 	.advertising-benefits article,
 	.advertising-why,
 	.advertising-options article,
+	.contact-grid article,
 	.newsletter-signup__content,
 	.newsletter-form {
 		width: 72vw;
 		max-width: 72vw;
 	}
 
-	.advertising-hero h1 {
+	.advertising-hero h1,
+	.contact-hero h1 {
 		max-width: 72vw;
 		font-size: 1.75rem;
 		line-height: 1.08;
 	}
 
 	.advertising-hero p,
+	.contact-hero p,
 	.advertising-copy p,
 	.advertising-why p,
 	.advertising-cta p,
@@ -1803,6 +1853,7 @@ textarea {
 	.advertising-copy h2,
 	.advertising-why h2,
 	.advertising-cta h2,
+	.contact-grid h2,
 	.newsletter-signup__content h2 {
 		max-width: 72vw;
 		font-size: 1.35rem;
@@ -1815,6 +1866,10 @@ textarea {
 	}
 
 	.newsletter-form {
+		grid-template-columns: 1fr;
+	}
+
+	.contact-grid {
 		grid-template-columns: 1fr;
 	}
 
