@@ -57,6 +57,10 @@
 		?>
 	</div><!-- .entry-content -->
 
+	<?php if ( ! is_singular() ) : ?>
+		<a class="read-more-link" href="<?php the_permalink(); ?>"><?php esc_html_e( 'Leer nota completa', 'caverna' ); ?></a>
+	<?php endif; ?>
+
 	<footer class="entry-footer">
 		<?php caverna_entry_footer(); ?>
 	</footer><!-- .entry-footer -->

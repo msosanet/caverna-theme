@@ -186,6 +186,152 @@ function caverna_scripts() {
 add_action( 'wp_enqueue_scripts', 'caverna_scripts' );
 
 /**
+ * Register newsletter subscribers in the admin.
+ *
+ * @return void
+ */
+function caverna_register_newsletter_subscriber() {
+	register_post_type(
+		'caverna_subscriber',
+		array(
+			'labels'              => array(
+				'name'          => esc_html__( 'Suscriptores', 'caverna' ),
+				'singular_name' => esc_html__( 'Suscriptor', 'caverna' ),
+				'menu_name'     => esc_html__( 'Newsletter', 'caverna' ),
+			),
+			'public'              => false,
+			'show_ui'             => true,
+			'show_in_menu'        => true,
+			'menu_icon'           => 'dashicons-email-alt2',
+			'supports'            => array( 'title' ),
+			'capability_type'     => 'post',
+			'exclude_from_search' => true,
+		)
+	);
+}
+add_action( 'init', 'caverna_register_newsletter_subscriber' );
+
+/**
+ * Store newsletter form submissions.
+ *
+ * @return void
+ */
+function caverna_handle_newsletter_subscribe() {
+	$redirect = wp_get_referer() ? wp_get_referer() : home_url( '/' );
+
+	if ( ! isset( $_POST['caverna_newsletter_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['caverna_newsletter_nonce'] ) ), 'caverna_newsletter_subscribe' ) ) {
+		wp_safe_redirect( add_query_arg( 'newsletter', 'error', $redirect ) );
+		exit;
+	}
+
+	$email = isset( $_POST['newsletter_email'] ) ? sanitize_email( wp_unslash( $_POST['newsletter_email'] ) ) : '';
+
+	if ( ! is_email( $email ) ) {
+		wp_safe_redirect( add_query_arg( 'newsletter', 'invalid', $redirect ) );
+		exit;
+	}
+
+	$existing = get_posts(
+		array(
+			'post_type'      => 'caverna_subscriber',
+			'title'          => $email,
+			'post_status'    => 'private',
+			'posts_per_page' => 1,
+			'fields'         => 'ids',
+		)
+	);
+
+	if ( $existing ) {
+		wp_safe_redirect( add_query_arg( 'newsletter', 'exists', $redirect ) );
+		exit;
+	}
+
+	$subscriber_id = wp_insert_post(
+		array(
+			'post_type'   => 'caverna_subscriber',
+			'post_status' => 'private',
+			'post_title'  => $email,
+		)
+	);
+
+	if ( is_wp_error( $subscriber_id ) || ! $subscriber_id ) {
+		wp_safe_redirect( add_query_arg( 'newsletter', 'error', $redirect ) );
+		exit;
+	}
+
+	update_post_meta( $subscriber_id, 'subscriber_email', $email );
+	update_post_meta( $subscriber_id, 'subscriber_source', esc_url_raw( $redirect ) );
+
+	wp_safe_redirect( add_query_arg( 'newsletter', 'ok', $redirect ) );
+	exit;
+}
+add_action( 'admin_post_nopriv_caverna_newsletter_subscribe', 'caverna_handle_newsletter_subscribe' );
+add_action( 'admin_post_caverna_newsletter_subscribe', 'caverna_handle_newsletter_subscribe' );
+
+/**
+ * Customize newsletter subscriber admin columns.
+ *
+ * @param array $columns Admin columns.
+ * @return array
+ */
+function caverna_subscriber_columns( $columns ) {
+	return array(
+		'cb'                => $columns['cb'],
+		'title'             => esc_html__( 'Correo', 'caverna' ),
+		'subscriber_source' => esc_html__( 'Origen', 'caverna' ),
+		'date'              => esc_html__( 'Fecha', 'caverna' ),
+	);
+}
+add_filter( 'manage_caverna_subscriber_posts_columns', 'caverna_subscriber_columns' );
+
+/**
+ * Render newsletter subscriber custom columns.
+ *
+ * @param string $column  Column key.
+ * @param int    $post_id Post ID.
+ * @return void
+ */
+function caverna_subscriber_column_content( $column, $post_id ) {
+	if ( 'subscriber_source' === $column ) {
+		$source = get_post_meta( $post_id, 'subscriber_source', true );
+		echo $source ? esc_url( $source ) : '&mdash;';
+	}
+}
+add_action( 'manage_caverna_subscriber_posts_custom_column', 'caverna_subscriber_column_content', 10, 2 );
+
+/**
+ * Render newsletter signup form.
+ *
+ * @return void
+ */
+function caverna_newsletter_form() {
+	$status = isset( $_GET['newsletter'] ) ? sanitize_key( wp_unslash( $_GET['newsletter'] ) ) : '';
+	?>
+	<section class="newsletter-signup content-layout content-layout--narrow">
+		<div class="newsletter-signup__content">
+			<p class="advertising-kicker"><?php esc_html_e( 'Newsletter', 'caverna' ); ?></p>
+			<h2><?php esc_html_e( 'Recibi novedades de Caverna Radio', 'caverna' ); ?></h2>
+			<p><?php esc_html_e( 'Dejanos tu correo para recibir notas, podcasts, novedades y acciones especiales.', 'caverna' ); ?></p>
+		</div>
+		<form class="newsletter-form" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" method="post">
+			<input type="hidden" name="action" value="caverna_newsletter_subscribe">
+			<?php wp_nonce_field( 'caverna_newsletter_subscribe', 'caverna_newsletter_nonce' ); ?>
+			<label class="screen-reader-text" for="newsletter_email"><?php esc_html_e( 'Correo electronico', 'caverna' ); ?></label>
+			<input id="newsletter_email" type="email" name="newsletter_email" placeholder="<?php esc_attr_e( 'tu@email.com', 'caverna' ); ?>" required>
+			<button type="submit"><?php esc_html_e( 'Registrarme', 'caverna' ); ?></button>
+			<?php if ( 'ok' === $status ) : ?>
+				<p class="newsletter-message"><?php esc_html_e( 'Listo, ya quedaste registrado.', 'caverna' ); ?></p>
+			<?php elseif ( 'exists' === $status ) : ?>
+				<p class="newsletter-message"><?php esc_html_e( 'Ese correo ya estaba registrado.', 'caverna' ); ?></p>
+			<?php elseif ( $status ) : ?>
+				<p class="newsletter-message newsletter-message--error"><?php esc_html_e( 'No pudimos registrar ese correo. Revisalo e intenta de nuevo.', 'caverna' ); ?></p>
+			<?php endif; ?>
+		</form>
+	</section>
+	<?php
+}
+
+/**
  * Pick between adsense and own ad on each page load.
  *
  * @param string $adsense AdSense or external ad code.
@@ -254,6 +400,49 @@ function caverna_advertising_url() {
 	}
 
 	return 'mailto:' . sanitize_email( get_option( 'admin_email' ) ) . '?subject=' . rawurlencode( __( 'Quiero publicitar en Caverna Radio', 'caverna' ) );
+}
+
+/**
+ * Get the configured advertising contact name.
+ *
+ * @return string
+ */
+function caverna_advertising_contact_name() {
+	return get_theme_mod( 'caverna_ad_contact_name', 'Surco' );
+}
+
+/**
+ * Get the configured advertising WhatsApp number.
+ *
+ * @return string
+ */
+function caverna_advertising_whatsapp_number() {
+	return preg_replace( '/\D+/', '', get_theme_mod( 'caverna_ad_whatsapp', '5492901471028' ) );
+}
+
+/**
+ * Get the configured advertising WhatsApp message.
+ *
+ * @return string
+ */
+function caverna_advertising_whatsapp_message() {
+	return get_theme_mod( 'caverna_ad_whatsapp_message', 'Vengo de cavernaradio.net y quiero saber mas sobre como publicitar.' );
+}
+
+/**
+ * Build WhatsApp URL for advertising inquiries.
+ *
+ * @return string
+ */
+function caverna_advertising_whatsapp_url() {
+	$number  = caverna_advertising_whatsapp_number();
+	$message = caverna_advertising_whatsapp_message();
+
+	if ( ! $number ) {
+		return caverna_advertising_url();
+	}
+
+	return 'https://wa.me/' . rawurlencode( $number ) . '?text=' . rawurlencode( $message );
 }
 
 /**

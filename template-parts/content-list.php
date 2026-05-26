@@ -24,5 +24,6 @@
 		<div class="entry-summary">
 			<?php the_excerpt(); ?>
 		</div>
+		<a class="read-more-link" href="<?php the_permalink(); ?>"><?php esc_html_e( 'Leer nota completa', 'caverna' ); ?></a>
 	</div>
 </article>

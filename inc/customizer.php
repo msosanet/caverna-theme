@@ -24,6 +24,57 @@ function caverna_customize_register( $wp_customize ) {
 	);
 
 	$wp_customize->add_setting(
+		'caverna_ad_contact_name',
+		array(
+			'sanitize_callback' => 'sanitize_text_field',
+			'default'           => 'Surco',
+		)
+	);
+	$wp_customize->add_control(
+		'caverna_ad_contact_name',
+		array(
+			'label'       => __( 'Nombre de contacto comercial', 'caverna' ),
+			'section'     => 'caverna_ads',
+			'type'        => 'text',
+			'description' => __( 'Ejemplo: Surco.', 'caverna' ),
+		)
+	);
+
+	$wp_customize->add_setting(
+		'caverna_ad_whatsapp',
+		array(
+			'sanitize_callback' => 'sanitize_text_field',
+			'default'           => '5492901471028',
+		)
+	);
+	$wp_customize->add_control(
+		'caverna_ad_whatsapp',
+		array(
+			'label'       => __( 'WhatsApp publicidad', 'caverna' ),
+			'section'     => 'caverna_ads',
+			'type'        => 'text',
+			'description' => __( 'Usar formato internacional sin +. Ejemplo: 5492901471028.', 'caverna' ),
+		)
+	);
+
+	$wp_customize->add_setting(
+		'caverna_ad_whatsapp_message',
+		array(
+			'sanitize_callback' => 'sanitize_textarea_field',
+			'default'           => 'Vengo de cavernaradio.net y quiero saber mas sobre como publicitar.',
+		)
+	);
+	$wp_customize->add_control(
+		'caverna_ad_whatsapp_message',
+		array(
+			'label'       => __( 'Mensaje inicial de WhatsApp', 'caverna' ),
+			'section'     => 'caverna_ads',
+			'type'        => 'textarea',
+			'description' => __( 'Este mensaje se carga automaticamente cuando alguien consulta por publicidad.', 'caverna' ),
+		)
+	);
+
+	$wp_customize->add_setting(
 		'caverna_header_ad_code',
 		array(
 			'sanitize_callback' => 'caverna_sanitize_ad_code',

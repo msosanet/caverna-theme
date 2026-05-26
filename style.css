@@ -880,6 +880,7 @@ textarea {
 	padding: 2.25rem 1.25rem 3.5rem;
 	display: grid;
 	gap: 2rem;
+	overflow-x: hidden;
 }
 
 @media screen and (min-width: 64em) {
@@ -955,6 +956,7 @@ textarea {
 .featured-card {
 	display: grid;
 	gap: 1.25rem;
+	min-width: 0;
 	padding: 1rem;
 	background: linear-gradient(180deg, rgba(26, 8, 23, 0.92), rgba(8, 0, 8, 0.92));
 	border: 1px solid rgba(240, 0, 184, 0.2);
@@ -995,6 +997,9 @@ textarea {
 }
 
 .secondary-card {
+	display: grid;
+	gap: 0.75rem;
+	min-width: 0;
 	padding: 1rem;
 	background: rgba(18, 6, 15, 0.82);
 	border: 1px solid rgba(240, 0, 184, 0.18);
@@ -1014,6 +1019,7 @@ textarea {
 .entry-title {
 	margin: 0 0 0.5rem;
 	line-height: 1.15;
+	overflow-wrap: break-word;
 }
 
 .entry-title a {
@@ -1166,6 +1172,7 @@ textarea {
 .latest-item {
 	display: grid;
 	gap: 1rem;
+	min-width: 0;
 	padding: 1.15rem 0;
 	border-bottom: 1px solid var(--color-border);
 }
@@ -1173,11 +1180,37 @@ textarea {
 .latest-content {
 	max-width: 72ch;
 	min-width: 0;
+	overflow-wrap: break-word;
 }
 
 .latest-item .entry-summary {
 	margin: 0.5rem 0 0;
 	color: var(--color-muted);
+	overflow-wrap: break-word;
+}
+
+.read-more-link {
+	display: inline-flex;
+	width: max-content;
+	max-width: 100%;
+	margin-top: 0.8rem;
+	padding: 0.55rem 0.75rem;
+	border: 1px solid rgba(255, 230, 0, 0.35);
+	border-radius: 8px;
+	color: var(--color-accent-2);
+	font-size: 0.9rem;
+	font-weight: 800;
+	text-decoration: none;
+}
+
+.read-more-link:visited {
+	color: var(--color-accent-2);
+}
+
+.read-more-link:hover,
+.read-more-link:focus {
+	background: var(--color-accent-2);
+	color: #130006;
 }
 
 @media screen and (min-width: 48em) {
@@ -1308,6 +1341,13 @@ textarea {
 }
 
 @media screen and (max-width: 47.9375em) {
+	.site,
+	.site-main,
+	.content-layout {
+		max-width: 100vw;
+		overflow-x: hidden;
+	}
+
 	.site-header-inner {
 		display: grid;
 		grid-template-columns: 1fr;
@@ -1328,6 +1368,38 @@ textarea {
 	.content-layout {
 		padding-left: 1rem;
 		padding-right: 1rem;
+	}
+
+	.home .header-ad {
+		display: none;
+	}
+
+	.home-featured,
+	.secondary-grid {
+		width: calc(100vw - 2rem);
+		max-width: calc(100vw - 2rem);
+	}
+
+	.featured-card,
+	.secondary-card,
+	.latest-item {
+		width: 100%;
+		max-width: 100%;
+		overflow: hidden;
+	}
+
+	.featured-content,
+	.latest-content,
+	.secondary-card .entry-header,
+	.entry-summary {
+		max-width: 72vw;
+		overflow-wrap: break-word;
+	}
+
+	.featured-card .entry-title,
+	.secondary-card .entry-title,
+	.latest-item .entry-title {
+		font-size: 1.25rem;
 	}
 
 	.ad-banner {
@@ -1474,6 +1546,12 @@ textarea {
 	color: #130006;
 }
 
+.advertising-contact {
+	margin-top: 0.9rem;
+	color: var(--color-muted);
+	font-size: 0.95rem;
+}
+
 .advertising-preview {
 	grid-template-columns: minmax(0, 1fr);
 	align-items: start;
@@ -1569,6 +1647,73 @@ textarea {
 	color: var(--color-muted);
 }
 
+.advertising-cta {
+	padding-top: 1rem;
+}
+
+.advertising-cta h2 {
+	margin: 0 0 0.75rem;
+	font-size: clamp(1.7rem, 4vw, 2.8rem);
+	line-height: 1;
+	text-transform: uppercase;
+}
+
+.advertising-cta p {
+	max-width: 68ch;
+	color: var(--color-muted);
+}
+
+.newsletter-signup {
+	margin-top: 1rem;
+	border-top: 1px solid rgba(240, 0, 184, 0.22);
+}
+
+.newsletter-signup__content h2 {
+	margin: 0 0 0.75rem;
+	font-size: clamp(1.8rem, 4vw, 3rem);
+	line-height: 1;
+	text-transform: uppercase;
+}
+
+.newsletter-signup__content p {
+	max-width: 62ch;
+	color: var(--color-muted);
+}
+
+.newsletter-form {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) auto;
+	gap: 0.75rem;
+	align-items: start;
+	max-width: 680px;
+}
+
+.newsletter-form input[type="email"] {
+	min-height: 48px;
+	padding: 0.75rem 0.9rem;
+	border-color: rgba(240, 0, 184, 0.28);
+	border-radius: 8px;
+}
+
+.newsletter-form button {
+	min-height: 48px;
+	border: 1px solid rgba(255, 230, 0, 0.45);
+	border-radius: 8px;
+	background: var(--color-accent-2);
+	color: #130006;
+	font-weight: 800;
+}
+
+.newsletter-message {
+	grid-column: 1 / -1;
+	margin: 0;
+	color: var(--color-accent-2);
+}
+
+.newsletter-message--error {
+	color: #ff7aa8;
+}
+
 @media screen and (min-width: 64em) {
 	.advertising-preview {
 		grid-template-columns: minmax(0, 1fr) 320px;
@@ -1579,15 +1724,27 @@ textarea {
 	}
 
 	.advertising-options__grid {
-		grid-template-columns: repeat(3, minmax(0, 1fr));
+		grid-template-columns: repeat(4, minmax(0, 1fr));
 	}
 }
 
 @media screen and (max-width: 47.9375em) {
+	body.home .site-header .header-ad,
+	body.blog .site-header .header-ad {
+		display: none !important;
+	}
+
+	body.home .home-latest > .ad-banner:first-child,
+	body.blog .home-latest > .ad-banner:first-child {
+		display: none;
+	}
+
 	.advertising-hero__content,
 	.advertising-benefits article,
 	.advertising-why,
-	.advertising-options article {
+	.advertising-options article,
+	.newsletter-signup__content,
+	.newsletter-form {
 		width: 72vw;
 		max-width: 72vw;
 	}
@@ -1600,13 +1757,18 @@ textarea {
 
 	.advertising-hero p,
 	.advertising-copy p,
-	.advertising-why p {
+	.advertising-why p,
+	.advertising-cta p,
+	.newsletter-signup__content p {
 		max-width: 72vw;
 		font-size: 0.98rem;
 	}
 
 	.advertising-copy h2,
-	.advertising-why h2 {
+	.advertising-why h2,
+	.advertising-cta h2,
+	.newsletter-signup__content h2 {
+		max-width: 72vw;
 		font-size: 1.35rem;
 		line-height: 1.08;
 	}
@@ -1614,6 +1776,10 @@ textarea {
 	.advertising-benefits p,
 	.advertising-options p {
 		font-size: 0.95rem;
+	}
+
+	.newsletter-form {
+		grid-template-columns: 1fr;
 	}
 }
 

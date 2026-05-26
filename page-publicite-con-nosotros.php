@@ -7,8 +7,9 @@
 
 get_header();
 
-$contact_email = sanitize_email( get_option( 'admin_email' ) );
-$contact_href  = 'mailto:' . $contact_email . '?subject=' . rawurlencode( __( 'Quiero publicitar en Caverna Radio', 'caverna' ) );
+$contact_name = caverna_advertising_contact_name();
+$contact_href = caverna_advertising_whatsapp_url();
+$whatsapp     = caverna_advertising_whatsapp_number();
 ?>
 
 	<main id="primary" class="site-main advertising-page">
@@ -17,7 +18,17 @@ $contact_href  = 'mailto:' . $contact_email . '?subject=' . rawurlencode( __( 'Q
 				<p class="advertising-kicker"><?php esc_html_e( 'Publicidad en Caverna Radio', 'caverna' ); ?></p>
 				<h1><?php esc_html_e( 'Inverti donde tu marca se pueda ver, escuchar y recordar.', 'caverna' ); ?></h1>
 				<p><?php esc_html_e( 'La publicidad digital permite estar presente cuando la audiencia busca, lee, comparte y vuelve al contenido. En Caverna Radio combinamos presencia web, identidad local y comunicacion directa para que tu inversion tenga mas recorrido.', 'caverna' ); ?></p>
-				<a class="advertising-button" href="<?php echo esc_url( $contact_href ); ?>"><?php esc_html_e( 'Consultar disponibilidad', 'caverna' ); ?></a>
+				<a class="advertising-button" href="<?php echo esc_url( $contact_href ); ?>" target="_blank" rel="noopener"><?php esc_html_e( 'Consultar por WhatsApp', 'caverna' ); ?></a>
+				<p class="advertising-contact">
+					<?php
+					printf(
+						/* translators: 1: contact name, 2: WhatsApp number. */
+						esc_html__( 'Contacto: %1$s · WhatsApp %2$s', 'caverna' ),
+						esc_html( $contact_name ),
+						esc_html( $whatsapp )
+					);
+					?>
+				</p>
 			</div>
 		</section>
 
@@ -82,7 +93,17 @@ $contact_href  = 'mailto:' . $contact_email . '?subject=' . rawurlencode( __( 'Q
 					<h2><?php esc_html_e( 'Acciones a medida', 'caverna' ); ?></h2>
 					<p><?php esc_html_e( 'Podemos combinar presencia web con menciones y propuestas comerciales simples.', 'caverna' ); ?></p>
 				</article>
+				<article>
+					<h2><?php esc_html_e( 'Web + radio online', 'caverna' ); ?></h2>
+					<p><?php esc_html_e( 'Un paquete combinado para aparecer en el sitio y sumar presencia en la radio online con menciones o acciones coordinadas.', 'caverna' ); ?></p>
+				</article>
 			</div>
+		</section>
+
+		<section class="advertising-cta content-layout content-layout--narrow">
+			<h2><?php esc_html_e( 'Ideal para comercios, eventos, marcas locales y emprendimientos.', 'caverna' ); ?></h2>
+			<p><?php esc_html_e( 'Contanos que queres promocionar y te respondemos con una propuesta simple para web, radio online o un combo a medida.', 'caverna' ); ?></p>
+			<a class="advertising-button" href="<?php echo esc_url( $contact_href ); ?>" target="_blank" rel="noopener"><?php esc_html_e( 'Hablar con publicidad', 'caverna' ); ?></a>
 		</section>
 	</main>
 

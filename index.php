@@ -228,6 +228,7 @@ get_header();
 
 		<?php
 		wp_reset_postdata();
+		caverna_newsletter_form();
 		?>
 
 	</main><!-- #main -->
