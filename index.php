@@ -119,6 +119,9 @@ get_header();
 				$leaderboard_ad     = get_theme_mod( 'caverna_home_leaderboard_ad', '' );
 				$leaderboard_ad_own = get_theme_mod( 'caverna_home_leaderboard_ad_own', '' );
 				$leaderboard_pick   = caverna_pick_ad( $leaderboard_ad, $leaderboard_ad_own );
+				if ( empty( $leaderboard_pick ) ) {
+					$leaderboard_pick = caverna_default_ad( 'horizontal' );
+				}
 				if ( ! empty( $leaderboard_pick ) ) :
 					?>
 					<div class="ad-banner ad-banner--leaderboard">
@@ -148,6 +151,9 @@ get_header();
 								$inline_ad     = get_theme_mod( 'caverna_home_inline_ad', '' );
 								$inline_ad_own = get_theme_mod( 'caverna_home_inline_ad_own', '' );
 								$inline_pick   = caverna_pick_ad( $inline_ad, $inline_ad_own );
+								if ( empty( $inline_pick ) ) {
+									$inline_pick = caverna_default_ad( 'horizontal' );
+								}
 								if ( ! empty( $inline_pick ) ) :
 									?>
 									<div class="home-ad">

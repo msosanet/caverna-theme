@@ -204,6 +204,45 @@ function caverna_pick_ad( $adsense, $own ) {
 }
 
 /**
+ * Render the default in-house ad artwork.
+ *
+ * @param string $format horizontal|vertical.
+ * @return string
+ */
+function caverna_default_ad( $format = 'horizontal' ) {
+	$is_vertical = 'vertical' === $format;
+	$horizontal  = get_template_directory_uri() . '/assets/ads/publicite-aqui-horizontal.png';
+	$vertical    = get_template_directory_uri() . '/assets/ads/publicite-aqui-vertical.png';
+	$class       = $is_vertical ? 'caverna-house-ad--vertical' : 'caverna-house-ad--horizontal';
+	$mailto      = sanitize_email( get_option( 'admin_email' ) );
+	$image       = sprintf(
+		'<img src="%1$s" alt="%2$s" loading="eager" decoding="async" fetchpriority="high">',
+		esc_url( $is_vertical ? $vertical : $horizontal ),
+		esc_attr__( 'Publicite aqui en Caverna Radio', 'caverna' )
+	);
+
+	if ( $is_vertical ) {
+		$image = sprintf(
+			'<picture><source srcset="%1$s" media="(min-width: 64em)">%2$s</picture>',
+			esc_url( $vertical ),
+			sprintf(
+				'<img src="%1$s" alt="%2$s" loading="eager" decoding="async" fetchpriority="high">',
+				esc_url( $horizontal ),
+				esc_attr__( 'Publicite aqui en Caverna Radio', 'caverna' )
+			)
+		);
+	}
+
+	return sprintf(
+		'<a class="caverna-house-ad %1$s" href="mailto:%2$s?subject=%3$s">%4$s</a>',
+		esc_attr( $class ),
+		esc_attr( $mailto ),
+		rawurlencode( __( 'Quiero publicitar en Caverna Radio', 'caverna' ) ),
+		$image
+	);
+}
+
+/**
  * Implement the Custom Header feature.
  */
 require get_template_directory() . '/inc/custom-header.php';

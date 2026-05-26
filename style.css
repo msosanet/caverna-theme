@@ -79,6 +79,7 @@ html {
  */
 body {
 	margin: 0;
+	overflow-x: hidden;
 }
 
 /**
@@ -393,12 +394,13 @@ html {
 /* Theme palette (from logo) */
 :root {
 	--color-bg: #000000;
-	--color-surface: #0c0000;
+	--color-surface: #12060f;
+	--color-surface-soft: #1a0817;
 	--color-text: #f0f0f0;
-	--color-muted: #f0c0c0;
-	--color-accent: #a800a8;
-	--color-accent-2: #e46c00;
-	--color-border: #2a1a1a;
+	--color-muted: #d9b6cf;
+	--color-accent: #f000b8;
+	--color-accent-2: #ffe600;
+	--color-border: #3a1833;
 }
 
 /*--------------------------------------------------------------
@@ -484,7 +486,9 @@ big {
 /* Elements
 --------------------------------------------- */
 body {
-	background: var(--color-bg);
+	background:
+		radial-gradient(circle at top left, rgba(240, 0, 184, 0.14), transparent 34rem),
+		linear-gradient(180deg, #050005 0%, var(--color-bg) 26rem);
 }
 
 hr {
@@ -663,8 +667,8 @@ textarea {
 /* Navigation
 --------------------------------------------- */
 .site-header {
-	background: var(--color-bg);
-	border-bottom: 1px solid var(--color-border);
+	background: rgba(0, 0, 0, 0.88);
+	border-bottom: 1px solid rgba(240, 0, 184, 0.25);
 }
 
 .site-header-inner {
@@ -706,8 +710,9 @@ textarea {
 
 .site-title {
 	margin: 0;
-	font-size: 1.25rem;
-	letter-spacing: 0.02em;
+	font-size: 1.35rem;
+	font-weight: 800;
+	letter-spacing: 0;
 }
 
 .site-title a {
@@ -724,7 +729,7 @@ textarea {
 .header-ad {
 	max-width: 1200px;
 	margin: 0 auto;
-	padding: 0 1.25rem 1.5rem;
+	padding: 0.5rem 1.25rem 1.35rem;
 	display: grid;
 	gap: 1rem;
 }
@@ -794,14 +799,14 @@ textarea {
 	display: block;
 	text-decoration: none;
 	color: var(--color-text);
-	font-weight: 600;
-	letter-spacing: 0.02em;
-	padding: 0.35rem 0;
+	font-weight: 700;
+	letter-spacing: 0;
+	padding: 0.45rem 0;
 }
 
 .main-navigation a:hover,
 .main-navigation a:focus {
-	color: var(--color-accent);
+	color: var(--color-accent-2);
 }
 
 /* Small menu. */
@@ -811,11 +816,12 @@ textarea {
 }
 
 .menu-toggle {
-	border: 1px solid var(--color-border);
-	background: var(--color-surface);
+	border: 1px solid rgba(240, 0, 184, 0.35);
+	background: rgba(26, 8, 23, 0.9);
 	color: var(--color-text);
-	padding: 0.6rem 0.9rem;
-	border-radius: 6px;
+	padding: 0.7rem 1rem;
+	border-radius: 8px;
+	font-weight: 700;
 }
 
 @media screen and (min-width: 37.5em) {
@@ -857,9 +863,9 @@ textarea {
 }
 
 .content-layout {
-	max-width: 100%;
+	max-width: 1200px;
 	margin: 0 auto;
-	padding: 2rem 1.25rem 3rem;
+	padding: 2.25rem 1.25rem 3.5rem;
 	display: grid;
 	gap: 2rem;
 }
@@ -881,6 +887,16 @@ textarea {
 	padding: 0;
 }
 
+.site-ad-rail {
+	margin: 0;
+	padding: 0;
+}
+
+.site-ad-rail__item {
+	position: sticky;
+	top: 1rem;
+}
+
 .widget-area .widget {
 	background: var(--color-surface);
 	border: 1px solid var(--color-border);
@@ -897,7 +913,7 @@ textarea {
 .home-featured {
 	display: grid;
 	gap: 2rem;
-	margin: 0 0 1.5rem;
+	margin: 0;
 }
 
 .secondary-grid {
@@ -923,10 +939,10 @@ textarea {
 .featured-card {
 	display: grid;
 	gap: 1.25rem;
-	padding: 1.5rem;
-	background: var(--color-surface);
-	border: 1px solid var(--color-border);
-	border-radius: 12px;
+	padding: 1rem;
+	background: linear-gradient(180deg, rgba(26, 8, 23, 0.92), rgba(8, 0, 8, 0.92));
+	border: 1px solid rgba(240, 0, 184, 0.2);
+	border-radius: 8px;
 }
 
 .featured-card .entry-summary {
@@ -937,16 +953,16 @@ textarea {
 .featured-media img {
 	width: 100%;
 	height: auto;
-	border-radius: 10px;
-	object-fit: contain;
+	border-radius: 6px;
+	object-fit: cover;
 	display: block;
 	background: #000000;
 }
 
 .featured-media {
 	background: #000000;
-	border-radius: 10px;
-	padding: 0.5rem;
+	border-radius: 6px;
+	padding: 0;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -964,9 +980,9 @@ textarea {
 
 .secondary-card {
 	padding: 1rem;
-	background: var(--color-surface);
-	border: 1px solid var(--color-border);
-	border-radius: 10px;
+	background: rgba(18, 6, 15, 0.82);
+	border: 1px solid rgba(240, 0, 184, 0.18);
+	border-radius: 8px;
 }
 
 .secondary-media img {
@@ -981,6 +997,7 @@ textarea {
 
 .entry-title {
 	margin: 0 0 0.5rem;
+	line-height: 1.15;
 }
 
 .entry-title a {
@@ -990,7 +1007,7 @@ textarea {
 
 .entry-title a:hover,
 .entry-title a:focus {
-	color: var(--color-accent);
+	color: var(--color-accent-2);
 }
 
 .entry-meta {
@@ -999,7 +1016,7 @@ textarea {
 }
 
 .home-latest {
-	margin-top: 2.5rem;
+	margin-top: 1rem;
 }
 
 .section-title {
@@ -1051,14 +1068,19 @@ textarea {
 
 .latest-list {
 	display: grid;
-	gap: 1.25rem;
+	gap: 0;
 }
 
 .latest-item {
 	display: grid;
 	gap: 1rem;
-	padding-bottom: 1.25rem;
+	padding: 1.15rem 0;
 	border-bottom: 1px solid var(--color-border);
+}
+
+.latest-content {
+	max-width: 72ch;
+	min-width: 0;
 }
 
 .latest-item .entry-summary {
@@ -1067,19 +1089,24 @@ textarea {
 }
 
 @media screen and (min-width: 48em) {
-	.latest-item {
-		grid-template-columns: 120px 1fr;
+	.latest-item:has(.latest-thumb) {
+		grid-template-columns: 150px minmax(0, 1fr);
 		align-items: start;
 	}
 }
 
 .latest-thumb img {
 	width: 100%;
-	height: auto;
-	border-radius: 8px;
+	aspect-ratio: 4 / 3;
+	object-fit: cover;
+	border-radius: 6px;
 }
 
-.home-ad,
+.home-ad {
+	margin: 2rem 0;
+	text-align: center;
+}
+
 .ad-slot {
 	margin: 2rem 0;
 	padding: 1.25rem;
@@ -1103,17 +1130,16 @@ textarea {
 }
 
 .ad-banner {
+	width: 100%;
+	max-width: 100%;
+	box-sizing: border-box;
 	margin: 1.5rem auto;
-	padding: 0.75rem;
-	border: 2px dashed #666666;
-	background: #2f2f2f;
-	border-radius: 10px;
 	display: grid;
 	place-items: center;
 }
 
 .ad-banner--leaderboard {
-	max-width: 728px;
+	max-width: 970px;
 }
 
 .ad-banner--rectangle {
@@ -1130,6 +1156,151 @@ textarea {
 	min-height: 250px;
 	display: grid;
 	align-items: center;
+}
+
+.home-ad:has(.caverna-house-ad),
+.ad-banner:has(.caverna-house-ad) {
+	padding: 0;
+	border: 0;
+	background: transparent;
+	border-radius: 0;
+}
+
+.home-ad:has(.caverna-house-ad) {
+	margin: 1.5rem 0 2rem;
+}
+
+.caverna-house-ad {
+	display: block;
+	width: 100%;
+	max-width: min(970px, calc(100vw - 2rem));
+	box-sizing: border-box;
+	line-height: 0;
+	text-decoration: none;
+}
+
+.caverna-house-ad picture {
+	display: block;
+}
+
+.caverna-house-ad img {
+	display: block;
+	width: 100%;
+	max-width: min(970px, calc(100vw - 2rem));
+	height: auto;
+	border-radius: 6px;
+	border: 1px solid rgba(240, 0, 184, 0.22);
+	background: #000000;
+	box-sizing: border-box;
+}
+
+.caverna-house-ad--horizontal {
+	max-width: 970px;
+	margin: 0 auto;
+}
+
+.caverna-house-ad--vertical {
+	max-width: 970px;
+	margin: 0 auto;
+}
+
+.header-ad .caverna-house-ad img {
+	max-height: none;
+	object-fit: contain;
+}
+
+@media screen and (min-width: 64em) {
+	.caverna-house-ad--vertical {
+		max-width: 320px;
+	}
+}
+
+@media screen and (max-width: 47.9375em) {
+	.site-header-inner {
+		display: grid;
+		grid-template-columns: 1fr;
+		align-items: start;
+		gap: 1rem;
+		padding: 1rem;
+	}
+
+	.main-navigation {
+		width: 100%;
+	}
+
+	.menu-toggle {
+		width: 100%;
+	}
+
+	.header-ad,
+	.content-layout {
+		padding-left: 1rem;
+		padding-right: 1rem;
+	}
+
+	.ad-banner {
+		margin: 1rem auto;
+	}
+
+	.home-ad:has(.caverna-house-ad) {
+		margin: 1rem 0 1.5rem;
+	}
+
+	.caverna-house-ad {
+		width: calc(100vw - 2rem);
+		max-width: calc(100vw - 2rem);
+	}
+
+	.caverna-house-ad--horizontal,
+	.caverna-house-ad--vertical {
+		aspect-ratio: 3 / 1;
+		background: url("assets/ads/publicite-aqui-horizontal.png") center / 68% auto no-repeat;
+	}
+
+	.caverna-house-ad img {
+		border-radius: 6px;
+	}
+
+	.caverna-house-ad--horizontal img,
+	.caverna-house-ad--vertical img {
+		width: 100%;
+		height: 100%;
+		object-fit: contain;
+		opacity: 0;
+	}
+}
+
+@media screen and (max-width: 63.9375em) {
+	.site-ad-rail {
+		display: none;
+	}
+}
+
+.site-footer {
+	border-top: 1px solid rgba(240, 0, 184, 0.25);
+	background: #050005;
+}
+
+.site-info {
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: 1.5rem 1.25rem;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem 1rem;
+	justify-content: space-between;
+	color: var(--color-muted);
+}
+
+.site-info strong {
+	color: var(--color-text);
+}
+
+@media screen and (max-width: 47.9375em) {
+	.site-info {
+		display: grid;
+		gap: 0.35rem;
+	}
 }
 
 /* Posts and pages

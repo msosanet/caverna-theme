@@ -49,12 +49,13 @@
 			</div><!-- .site-branding -->
 
 			<nav id="site-navigation" class="main-navigation">
-				<button class="menu-toggle" aria-controls="primary-menu" aria-expanded="false"><?php esc_html_e( 'Primary Menu', 'caverna' ); ?></button>
+				<button class="menu-toggle" aria-controls="primary-menu" aria-expanded="false"><?php esc_html_e( 'Menu', 'caverna' ); ?></button>
 				<?php
 				wp_nav_menu(
 					array(
 						'theme_location' => 'menu-1',
 						'menu_id'        => 'primary-menu',
+						'fallback_cb'    => false,
 					)
 				);
 				?>
@@ -65,6 +66,10 @@
 		$header_ad_code = get_theme_mod( 'caverna_header_ad_code', '' );
 		$header_ad_own  = get_theme_mod( 'caverna_header_ad_own', '' );
 		$header_ad      = caverna_pick_ad( $header_ad_code, $header_ad_own );
+		if ( empty( $header_ad ) ) {
+			$header_ad = caverna_default_ad( 'horizontal' );
+		}
+
 		if ( ! empty( $header_ad ) || get_header_image() || is_customize_preview() ) :
 			?>
 			<div class="header-ad">
