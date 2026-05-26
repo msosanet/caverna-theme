@@ -23,6 +23,40 @@ function caverna_customize_register( $wp_customize ) {
 		)
 	);
 
+	$wp_customize->add_section(
+		'caverna_social',
+		array(
+			'title'    => __( 'Redes sociales', 'caverna' ),
+			'priority' => 135,
+		)
+	);
+
+	foreach (
+		array(
+			'instagram' => __( 'Instagram', 'caverna' ),
+			'facebook'  => __( 'Facebook', 'caverna' ),
+			'youtube'   => __( 'YouTube', 'caverna' ),
+			'tiktok'    => __( 'TikTok', 'caverna' ),
+		) as $network => $label
+	) {
+		$wp_customize->add_setting(
+			'caverna_social_' . $network,
+			array(
+				'sanitize_callback' => 'esc_url_raw',
+				'default'           => '',
+			)
+		);
+		$wp_customize->add_control(
+			'caverna_social_' . $network,
+			array(
+				'label'       => $label,
+				'section'     => 'caverna_social',
+				'type'        => 'url',
+				'description' => __( 'Pegar URL completa del perfil.', 'caverna' ),
+			)
+		);
+	}
+
 	$wp_customize->add_setting(
 		'caverna_ad_contact_name',
 		array(

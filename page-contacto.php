@@ -43,6 +43,13 @@ $whatsapp     = caverna_advertising_whatsapp_number();
 				<p><?php esc_html_e( 'Si queres acercar una noticia, actividad cultural, lanzamiento o propuesta editorial, escribinos con la informacion principal.', 'caverna' ); ?></p>
 				<a class="read-more-link" href="<?php echo esc_url( $contact_href ); ?>" target="_blank" rel="noopener"><?php esc_html_e( 'Enviar informacion', 'caverna' ); ?></a>
 			</article>
+			<?php if ( caverna_social_links() ) : ?>
+				<article class="contact-social-card">
+					<h2><?php esc_html_e( 'Redes sociales', 'caverna' ); ?></h2>
+					<p><?php esc_html_e( 'Tambien podes seguirnos y escribirnos por nuestros perfiles para conocer notas, acciones, sorteos y novedades.', 'caverna' ); ?></p>
+					<?php caverna_social_links_markup( 'contact-social-links' ); ?>
+				</article>
+			<?php endif; ?>
 		</section>
 
 		<?php caverna_newsletter_form(); ?>

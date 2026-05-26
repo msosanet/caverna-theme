@@ -24,6 +24,7 @@
 				<a href="<?php echo esc_url( caverna_page_url( 'contacto' ) ); ?>"><?php esc_html_e( 'Contacto', 'caverna' ); ?></a>
 				<a href="<?php echo esc_url( get_privacy_policy_url() ); ?>"><?php esc_html_e( 'Privacidad', 'caverna' ); ?></a>
 			</nav>
+			<?php caverna_social_links_markup( 'footer-social-links' ); ?>
 		</div><!-- .site-info -->
 	</footer><!-- #colophon -->
 </div><!-- #page -->

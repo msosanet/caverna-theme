@@ -542,6 +542,55 @@ function caverna_advertising_whatsapp_url() {
 }
 
 /**
+ * Get configured social media links.
+ *
+ * @return array
+ */
+function caverna_social_links() {
+	$networks = array(
+		'instagram' => __( 'Instagram', 'caverna' ),
+		'facebook'  => __( 'Facebook', 'caverna' ),
+		'youtube'   => __( 'YouTube', 'caverna' ),
+		'tiktok'    => __( 'TikTok', 'caverna' ),
+	);
+	$links    = array();
+
+	foreach ( $networks as $key => $label ) {
+		$url = trim( (string) get_theme_mod( 'caverna_social_' . $key, '' ) );
+
+		if ( $url ) {
+			$links[ $key ] = array(
+				'label' => $label,
+				'url'   => esc_url_raw( $url ),
+			);
+		}
+	}
+
+	return $links;
+}
+
+/**
+ * Render social links.
+ *
+ * @param string $class_name Wrapper class.
+ * @return void
+ */
+function caverna_social_links_markup( $class_name = 'social-links' ) {
+	$links = caverna_social_links();
+
+	if ( ! $links ) {
+		return;
+	}
+	?>
+	<nav class="<?php echo esc_attr( $class_name ); ?>" aria-label="<?php esc_attr_e( 'Redes sociales', 'caverna' ); ?>">
+		<?php foreach ( $links as $link ) : ?>
+			<a href="<?php echo esc_url( $link['url'] ); ?>" target="_blank" rel="noopener"><?php echo esc_html( $link['label'] ); ?></a>
+		<?php endforeach; ?>
+	</nav>
+	<?php
+}
+
+/**
  * Get editable advertising package text.
  *
  * @return array
@@ -610,6 +659,19 @@ function caverna_seo_meta() {
 	<meta property="og:url" content="<?php echo esc_url( $url ); ?>">
 	<meta property="og:image" content="<?php echo esc_url( $image ); ?>">
 	<meta name="twitter:card" content="summary_large_image">
+	<?php
+	$social_links = caverna_social_links();
+	if ( $social_links ) :
+		$schema = array(
+			'@context' => 'https://schema.org',
+			'@type'    => 'Organization',
+			'name'     => get_bloginfo( 'name' ),
+			'url'      => home_url( '/' ),
+			'sameAs'   => wp_list_pluck( $social_links, 'url' ),
+		);
+		?>
+		<script type="application/ld+json"><?php echo wp_json_encode( $schema, JSON_UNESCAPED_SLASHES ); ?></script>
+	<?php endif; ?>
 	<?php
 }
 add_action( 'wp_head', 'caverna_seo_meta', 4 );
