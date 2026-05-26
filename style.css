@@ -1728,6 +1728,55 @@ textarea {
 	color: var(--color-muted);
 }
 
+.advertising-pricing {
+	border-top: 1px solid rgba(240, 0, 184, 0.22);
+}
+
+.advertising-pricing__grid {
+	display: grid;
+	gap: 1rem;
+}
+
+.pricing-card {
+	padding: 1.25rem;
+	border: 1px solid rgba(240, 0, 184, 0.24);
+	border-radius: 8px;
+	background: rgba(18, 6, 15, 0.78);
+}
+
+.pricing-card--featured {
+	border-color: rgba(255, 230, 0, 0.42);
+	background: linear-gradient(180deg, rgba(255, 230, 0, 0.1), rgba(240, 0, 184, 0.08));
+}
+
+.pricing-card__eyebrow {
+	margin: 0 0 0.5rem;
+	color: var(--color-accent-2);
+	font-weight: 800;
+	text-transform: uppercase;
+}
+
+.pricing-card h3 {
+	margin: 0 0 0.75rem;
+	font-size: clamp(2rem, 5vw, 3.5rem);
+	line-height: 1;
+	color: var(--color-text);
+}
+
+.pricing-card p {
+	color: var(--color-muted);
+}
+
+.pricing-card ul {
+	margin: 1rem 0 0;
+	padding-left: 1.1rem;
+	color: var(--color-text);
+}
+
+.pricing-card li + li {
+	margin-top: 0.45rem;
+}
+
 .advertising-cta {
 	padding-top: 1rem;
 }
@@ -2034,6 +2083,10 @@ textarea {
 	.advertising-options__grid {
 		grid-template-columns: repeat(4, minmax(0, 1fr));
 	}
+
+	.advertising-pricing__grid {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
 }
 
 @media screen and (max-width: 47.9375em) {
@@ -2053,6 +2106,7 @@ textarea {
 	.advertising-benefits article,
 	.advertising-why,
 	.advertising-options article,
+	.pricing-card,
 	.contact-grid article,
 	.about-grid article,
 	.newsletter-signup__content,
@@ -2091,7 +2145,9 @@ textarea {
 	}
 
 	.advertising-benefits p,
-	.advertising-options p {
+	.advertising-options p,
+	.pricing-card p,
+	.pricing-card li {
 		font-size: 0.95rem;
 	}
 
