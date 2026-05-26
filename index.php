@@ -141,11 +141,17 @@ get_header();
 				<div class="latest-list">
 					<?php
 					if ( $latest_query->have_posts() ) :
-						$latest_count = 0;
+						$latest_count         = 0;
+						$newsletter_rendered  = false;
 						while ( $latest_query->have_posts() ) :
 							$latest_query->the_post();
 							$latest_count++;
 							get_template_part( 'template-parts/content', 'list' );
+
+							if ( ! $newsletter_rendered && 2 === $latest_count ) :
+								caverna_newsletter_form( 'inline' );
+								$newsletter_rendered = true;
+							endif;
 
 							if ( 0 === $latest_count % 5 ) :
 								$inline_ad     = get_theme_mod( 'caverna_home_inline_ad', '' );
@@ -173,6 +179,10 @@ get_header();
 								endif;
 							endif;
 						endwhile;
+
+						if ( ! $newsletter_rendered && $latest_count > 0 ) :
+							caverna_newsletter_form( 'inline' );
+						endif;
 					else :
 						get_template_part( 'template-parts/content', 'none' );
 					endif;
@@ -228,7 +238,6 @@ get_header();
 
 		<?php
 		wp_reset_postdata();
-		caverna_newsletter_form();
 		?>
 
 	</main><!-- #main -->

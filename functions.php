@@ -304,10 +304,17 @@ add_action( 'manage_caverna_subscriber_posts_custom_column', 'caverna_subscriber
  *
  * @return void
  */
-function caverna_newsletter_form() {
-	$status = isset( $_GET['newsletter'] ) ? sanitize_key( wp_unslash( $_GET['newsletter'] ) ) : '';
+function caverna_newsletter_form( $variant = '' ) {
+	$status  = isset( $_GET['newsletter'] ) ? sanitize_key( wp_unslash( $_GET['newsletter'] ) ) : '';
+	$classes = 'newsletter-signup';
+
+	if ( 'inline' === $variant ) {
+		$classes .= ' newsletter-signup--inline';
+	} else {
+		$classes .= ' content-layout content-layout--narrow';
+	}
 	?>
-	<section class="newsletter-signup content-layout content-layout--narrow">
+	<section class="<?php echo esc_attr( $classes ); ?>">
 		<div class="newsletter-signup__content">
 			<p class="advertising-kicker"><?php esc_html_e( 'Newsletter', 'caverna' ); ?></p>
 			<h2><?php esc_html_e( 'Recibi novedades de Caverna Radio', 'caverna' ); ?></h2>
