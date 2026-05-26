@@ -75,6 +75,23 @@ function caverna_customize_register( $wp_customize ) {
 	);
 
 	$wp_customize->add_setting(
+		'caverna_ad_packages',
+		array(
+			'sanitize_callback' => 'sanitize_textarea_field',
+			'default'           => "Web destacada|Banners en portada, notas o secciones para mantener tu marca visible mientras la audiencia navega.\nRadio online|Menciones, placas y presencia integrada en la transmision digital de Caverna Radio.\nWeb + radio online|Un paquete combinado para estar presente en el sitio y reforzar el mensaje en la radio online.\nCampanas locales|Acciones para comercios, eventos, marcas locales y emprendimientos que necesitan llegada concreta.",
+		)
+	);
+	$wp_customize->add_control(
+		'caverna_ad_packages',
+		array(
+			'label'       => __( 'Paquetes comerciales', 'caverna' ),
+			'section'     => 'caverna_ads',
+			'type'        => 'textarea',
+			'description' => __( 'Un paquete por linea. Formato: Titulo|Descripcion.', 'caverna' ),
+		)
+	);
+
+	$wp_customize->add_setting(
 		'caverna_header_ad_code',
 		array(
 			'sanitize_callback' => 'caverna_sanitize_ad_code',

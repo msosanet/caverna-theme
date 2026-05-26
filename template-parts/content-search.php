@@ -29,6 +29,8 @@
 		<?php the_excerpt(); ?>
 	</div><!-- .entry-summary -->
 
+	<a class="read-more-link" href="<?php the_permalink(); ?>"><?php esc_html_e( 'Leer nota completa', 'caverna' ); ?></a>
+
 	<footer class="entry-footer">
 		<?php caverna_entry_footer(); ?>
 	</footer><!-- .entry-footer -->

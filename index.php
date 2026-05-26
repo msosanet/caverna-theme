@@ -238,6 +238,59 @@ get_header();
 
 		<?php
 		wp_reset_postdata();
+		$home_sections = array(
+			array(
+				'slug'  => 'cannabis',
+				'label' => __( 'Cannabis', 'caverna' ),
+			),
+			array(
+				'slug'  => 'cultura',
+				'label' => __( 'Cultura', 'caverna' ),
+			),
+			array(
+				'slug'  => 'podcasts',
+				'label' => __( 'Podcasts', 'caverna' ),
+			),
+		);
+
+		foreach ( $home_sections as $home_section ) :
+			$section_term = get_category_by_slug( $home_section['slug'] );
+
+			if ( ! $section_term ) {
+				continue;
+			}
+
+			$section_query = new WP_Query(
+				array(
+					'post_type'           => 'post',
+					'posts_per_page'      => 3,
+					'cat'                 => (int) $section_term->term_id,
+					'post__not_in'        => $featured_ids,
+					'ignore_sticky_posts' => 1,
+				)
+			);
+
+			if ( ! $section_query->have_posts() ) {
+				continue;
+			}
+			?>
+			<section class="home-section content-layout">
+				<div class="home-section__header">
+					<h2 class="section-title"><?php echo esc_html( $home_section['label'] ); ?></h2>
+					<a class="read-more-link" href="<?php echo esc_url( get_category_link( $section_term ) ); ?>"><?php esc_html_e( 'Ver seccion', 'caverna' ); ?></a>
+				</div>
+				<div class="secondary-grid">
+					<?php
+					while ( $section_query->have_posts() ) :
+						$section_query->the_post();
+						get_template_part( 'template-parts/content', 'secondary' );
+					endwhile;
+					wp_reset_postdata();
+					?>
+				</div>
+			</section>
+			<?php
+		endforeach;
 		?>
 
 	</main><!-- #main -->

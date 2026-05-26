@@ -81,22 +81,12 @@ $whatsapp     = caverna_advertising_whatsapp_number();
 
 		<section class="advertising-options content-layout content-layout--narrow">
 			<div class="advertising-options__grid">
-				<article>
-					<h2><?php esc_html_e( 'Portada', 'caverna' ); ?></h2>
-					<p><?php esc_html_e( 'Banner destacado en la home para campanas, eventos, lanzamientos y comercios.', 'caverna' ); ?></p>
-				</article>
-				<article>
-					<h2><?php esc_html_e( 'Lateral desktop', 'caverna' ); ?></h2>
-					<p><?php esc_html_e( 'Pieza vertical visible junto al contenido principal en pantallas grandes.', 'caverna' ); ?></p>
-				</article>
-				<article>
-					<h2><?php esc_html_e( 'Acciones a medida', 'caverna' ); ?></h2>
-					<p><?php esc_html_e( 'Podemos combinar presencia web con menciones y propuestas comerciales simples.', 'caverna' ); ?></p>
-				</article>
-				<article>
-					<h2><?php esc_html_e( 'Web + radio online', 'caverna' ); ?></h2>
-					<p><?php esc_html_e( 'Un paquete combinado para aparecer en el sitio y sumar presencia en la radio online con menciones o acciones coordinadas.', 'caverna' ); ?></p>
-				</article>
+				<?php foreach ( caverna_advertising_packages() as $package ) : ?>
+					<article>
+						<h2><?php echo esc_html( $package['title'] ); ?></h2>
+						<p><?php echo esc_html( $package['text'] ); ?></p>
+					</article>
+				<?php endforeach; ?>
 			</div>
 		</section>
 

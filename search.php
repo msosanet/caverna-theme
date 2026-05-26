@@ -22,8 +22,10 @@ get_header();
 					printf( esc_html__( 'Resultados para: %s', 'caverna' ), '<span>' . get_search_query() . '</span>' );
 					?>
 				</h1>
+				<?php get_search_form(); ?>
 			</header><!-- .page-header -->
 
+			<div class="search-results-list">
 			<?php
 			/* Start the Loop */
 			while ( have_posts() ) :
@@ -37,11 +39,21 @@ get_header();
 				get_template_part( 'template-parts/content', 'search' );
 
 			endwhile;
+			?>
+			</div>
 
+			<?php
 			the_posts_navigation();
 
 		else :
 
+			?>
+			<header class="page-header">
+				<h1 class="page-title"><?php esc_html_e( 'No encontramos resultados', 'caverna' ); ?></h1>
+				<p><?php esc_html_e( 'Proba con otra palabra o volve a las ultimas notas.', 'caverna' ); ?></p>
+				<?php get_search_form(); ?>
+			</header>
+			<?php
 			get_template_part( 'template-parts/content', 'none' );
 
 		endif;

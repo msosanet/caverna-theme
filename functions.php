@@ -84,6 +84,11 @@ function caverna_setup() {
 
 	// Add theme support for selective refresh for widgets.
 	add_theme_support( 'customize-selective-refresh-widgets' );
+	add_theme_support( 'responsive-embeds' );
+	add_theme_support( 'align-wide' );
+
+	add_image_size( 'caverna-card', 640, 420, true );
+	add_image_size( 'caverna-wide', 1200, 630, true );
 
 	/**
 	 * Add support for core custom logo.
@@ -219,6 +224,11 @@ add_action( 'init', 'caverna_register_newsletter_subscriber' );
 function caverna_handle_newsletter_subscribe() {
 	$redirect = wp_get_referer() ? wp_get_referer() : home_url( '/' );
 
+	if ( ! empty( $_POST['newsletter_website'] ) ) {
+		wp_safe_redirect( add_query_arg( 'newsletter', 'ok', $redirect ) );
+		exit;
+	}
+
 	if ( ! isset( $_POST['caverna_newsletter_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['caverna_newsletter_nonce'] ) ), 'caverna_newsletter_subscribe' ) ) {
 		wp_safe_redirect( add_query_arg( 'newsletter', 'error', $redirect ) );
 		exit;
@@ -325,6 +335,8 @@ function caverna_newsletter_form( $variant = '' ) {
 			<?php wp_nonce_field( 'caverna_newsletter_subscribe', 'caverna_newsletter_nonce' ); ?>
 			<label class="screen-reader-text" for="newsletter_email"><?php esc_html_e( 'Correo electronico', 'caverna' ); ?></label>
 			<input id="newsletter_email" type="email" name="newsletter_email" placeholder="<?php esc_attr_e( 'tu@email.com', 'caverna' ); ?>" required>
+			<label class="newsletter-hp" for="newsletter_website"><?php esc_html_e( 'Sitio web', 'caverna' ); ?></label>
+			<input class="newsletter-hp" id="newsletter_website" type="text" name="newsletter_website" tabindex="-1" autocomplete="off">
 			<button type="submit"><?php esc_html_e( 'Registrarme', 'caverna' ); ?></button>
 			<?php if ( 'ok' === $status ) : ?>
 				<p class="newsletter-message"><?php esc_html_e( 'Listo, ya quedaste registrado.', 'caverna' ); ?></p>
@@ -337,6 +349,67 @@ function caverna_newsletter_form( $variant = '' ) {
 	</section>
 	<?php
 }
+
+/**
+ * Export newsletter subscribers as CSV for administrators.
+ *
+ * @return void
+ */
+function caverna_export_newsletter_subscribers() {
+	if ( ! current_user_can( 'edit_posts' ) ) {
+		wp_die( esc_html__( 'No tenes permisos para exportar suscriptores.', 'caverna' ) );
+	}
+
+	check_admin_referer( 'caverna_export_newsletter' );
+
+	$subscribers = get_posts(
+		array(
+			'post_type'      => 'caverna_subscriber',
+			'post_status'    => 'private',
+			'posts_per_page' => -1,
+			'orderby'        => 'date',
+			'order'          => 'DESC',
+		)
+	);
+
+	header( 'Content-Type: text/csv; charset=utf-8' );
+	header( 'Content-Disposition: attachment; filename=caverna-newsletter.csv' );
+
+	$output = fopen( 'php://output', 'w' );
+	fputcsv( $output, array( 'email', 'origen', 'fecha' ) );
+
+	foreach ( $subscribers as $subscriber ) {
+		fputcsv(
+			$output,
+			array(
+				get_post_meta( $subscriber->ID, 'subscriber_email', true ),
+				get_post_meta( $subscriber->ID, 'subscriber_source', true ),
+				get_the_date( 'c', $subscriber ),
+			)
+		);
+	}
+
+	fclose( $output );
+	exit;
+}
+add_action( 'admin_post_caverna_export_newsletter', 'caverna_export_newsletter_subscribers' );
+
+/**
+ * Add export action to subscriber admin.
+ *
+ * @return void
+ */
+function caverna_newsletter_admin_export_link() {
+	$screen = get_current_screen();
+
+	if ( ! $screen || 'edit-caverna_subscriber' !== $screen->id ) {
+		return;
+	}
+
+	$url = wp_nonce_url( admin_url( 'admin-post.php?action=caverna_export_newsletter' ), 'caverna_export_newsletter' );
+	echo '<div class="notice notice-info"><p><a class="button button-primary" href="' . esc_url( $url ) . '">' . esc_html__( 'Exportar correos CSV', 'caverna' ) . '</a></p></div>';
+}
+add_action( 'admin_notices', 'caverna_newsletter_admin_export_link' );
 
 /**
  * Pick between adsense and own ad on each page load.
@@ -410,6 +483,22 @@ function caverna_advertising_url() {
 }
 
 /**
+ * Get a published page URL by slug.
+ *
+ * @param string $slug Page slug.
+ * @return string
+ */
+function caverna_page_url( $slug ) {
+	$page = get_page_by_path( $slug );
+
+	if ( $page instanceof WP_Post && 'publish' === $page->post_status ) {
+		return get_permalink( $page );
+	}
+
+	return home_url( '/' . trim( $slug, '/' ) . '/' );
+}
+
+/**
  * Get the configured advertising contact name.
  *
  * @return string
@@ -453,6 +542,111 @@ function caverna_advertising_whatsapp_url() {
 }
 
 /**
+ * Get editable advertising package text.
+ *
+ * @return array
+ */
+function caverna_advertising_packages() {
+	$default = array(
+		'Web destacada|Banners en portada, notas o secciones para mantener tu marca visible mientras la audiencia navega.',
+		'Radio online|Menciones, placas y presencia integrada en la transmision digital de Caverna Radio.',
+		'Web + radio online|Un paquete combinado para estar presente en el sitio y reforzar el mensaje en la radio online.',
+		'Campanas locales|Acciones para comercios, eventos, marcas locales y emprendimientos que necesitan llegada concreta.',
+	);
+	$raw     = get_theme_mod( 'caverna_ad_packages', implode( "\n", $default ) );
+	$lines   = array_filter( array_map( 'trim', explode( "\n", $raw ) ) );
+	$items   = array();
+
+	foreach ( $lines as $line ) {
+		$parts   = array_map( 'trim', explode( '|', $line, 2 ) );
+		$items[] = array(
+			'title' => $parts[0],
+			'text'  => isset( $parts[1] ) ? $parts[1] : '',
+		);
+	}
+
+	return $items;
+}
+
+/**
+ * Print lightweight SEO and social metadata.
+ *
+ * @return void
+ */
+function caverna_seo_meta() {
+	$description = get_bloginfo( 'description' );
+	$title       = wp_get_document_title();
+	$request_uri = isset( $_SERVER['REQUEST_URI'] ) ? wp_unslash( $_SERVER['REQUEST_URI'] ) : '/';
+	$host        = isset( $_SERVER['HTTP_HOST'] ) ? wp_unslash( $_SERVER['HTTP_HOST'] ) : wp_parse_url( home_url(), PHP_URL_HOST );
+	$url         = set_url_scheme( 'http://' . $host . $request_uri );
+	$image       = get_template_directory_uri() . '/assets/ads/publicite-aqui-horizontal.png';
+	$type        = 'website';
+
+	if ( is_singular() ) {
+		$post = get_queried_object();
+		if ( $post instanceof WP_Post ) {
+			$description = has_excerpt( $post ) ? get_the_excerpt( $post ) : wp_trim_words( wp_strip_all_tags( $post->post_content ), 28 );
+			$url         = get_permalink( $post );
+			$type        = 'post' === get_post_type( $post ) ? 'article' : 'website';
+			if ( has_post_thumbnail( $post ) ) {
+				$image = get_the_post_thumbnail_url( $post, 'caverna-wide' );
+			}
+		}
+	} elseif ( is_archive() ) {
+		$description = wp_strip_all_tags( get_the_archive_description() );
+		if ( ! $description ) {
+			$description = sprintf( __( 'Notas, cultura y contenidos independientes de %s.', 'caverna' ), get_bloginfo( 'name' ) );
+		}
+	} elseif ( is_search() ) {
+		$description = sprintf( __( 'Resultados de busqueda en %s.', 'caverna' ), get_bloginfo( 'name' ) );
+	}
+
+	$description = $description ? $description : 'Caverna Radio: comunicacion alternativa desde Ushuaia. Noticias, cultura, cannabis, podcasts y contenidos independientes.';
+	?>
+	<meta name="description" content="<?php echo esc_attr( wp_trim_words( wp_strip_all_tags( $description ), 32 ) ); ?>">
+	<meta property="og:title" content="<?php echo esc_attr( $title ); ?>">
+	<meta property="og:description" content="<?php echo esc_attr( wp_trim_words( wp_strip_all_tags( $description ), 32 ) ); ?>">
+	<meta property="og:type" content="<?php echo esc_attr( $type ); ?>">
+	<meta property="og:url" content="<?php echo esc_url( $url ); ?>">
+	<meta property="og:image" content="<?php echo esc_url( $image ); ?>">
+	<meta name="twitter:card" content="summary_large_image">
+	<?php
+}
+add_action( 'wp_head', 'caverna_seo_meta', 4 );
+
+/**
+ * Keep the primary menu concise when default/sample pages are present.
+ *
+ * @param array  $items Menu items.
+ * @param object $args  Menu args.
+ * @return array
+ */
+function caverna_clean_primary_menu_items( $items, $args ) {
+	if ( empty( $args->theme_location ) || 'menu-1' !== $args->theme_location ) {
+		return $items;
+	}
+
+	return array_values(
+		array_filter(
+			$items,
+			function ( $item ) {
+				$path = trim( (string) wp_parse_url( $item->url, PHP_URL_PATH ), '/' );
+				if ( false !== strpos( $path, 'pagina-ejemplo' ) || false !== strpos( $path, 'sample-page' ) ) {
+					return false;
+				}
+
+				if ( false !== stripos( $item->title, 'Publicite con nosotros' ) ) {
+					$item->title = __( 'Publicite', 'caverna' );
+				}
+
+				return true;
+			}
+		)
+	);
+}
+add_filter( 'wp_nav_menu_objects', 'caverna_clean_primary_menu_items', 10, 2 );
+
+/**
  * Render a compact primary menu when no WordPress menu is assigned.
  *
  * @return void
@@ -461,17 +655,9 @@ function caverna_primary_menu_fallback() {
 	?>
 	<ul id="primary-menu" class="menu">
 		<li><a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php esc_html_e( 'Inicio', 'caverna' ); ?></a></li>
-		<?php $advertising_page = get_page_by_path( 'publicite-con-nosotros' ); ?>
-		<?php
-		wp_list_pages(
-			array(
-				'title_li' => '',
-				'depth'    => 1,
-				'exclude'  => $advertising_page instanceof WP_Post ? (string) $advertising_page->ID : '',
-			)
-		);
-		?>
+		<li><a href="<?php echo esc_url( caverna_page_url( 'sobre-nosotros' ) ); ?>"><?php esc_html_e( 'Sobre nosotros', 'caverna' ); ?></a></li>
 		<li><a href="<?php echo esc_url( caverna_advertising_url() ); ?>"><?php esc_html_e( 'Publicite', 'caverna' ); ?></a></li>
+		<li><a href="<?php echo esc_url( caverna_page_url( 'contacto' ) ); ?>"><?php esc_html_e( 'Contacto', 'caverna' ); ?></a></li>
 	</ul>
 	<?php
 }

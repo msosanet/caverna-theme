@@ -26,6 +26,9 @@
 				caverna_posted_by();
 				?>
 			</div><!-- .entry-meta -->
+			<div class="entry-categories">
+				<?php the_category( ' ' ); ?>
+			</div>
 		<?php endif; ?>
 	</header><!-- .entry-header -->
 
