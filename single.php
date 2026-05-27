@@ -20,6 +20,8 @@ get_header();
 			get_template_part( 'template-parts/content', get_post_type() );
 
 			?>
+			<?php caverna_newsletter_form( 'inline' ); ?>
+
 			<section class="share-box" aria-label="<?php esc_attr_e( 'Compartir nota', 'caverna' ); ?>">
 				<h2><?php esc_html_e( 'Compartir nota', 'caverna' ); ?></h2>
 				<a class="read-more-link" href="<?php echo esc_url( 'https://www.facebook.com/sharer/sharer.php?u=' . rawurlencode( get_permalink() ) ); ?>" target="_blank" rel="noopener"><?php esc_html_e( 'Facebook', 'caverna' ); ?></a>
@@ -28,15 +30,25 @@ get_header();
 			</section>
 
 			<?php
-			$related = new WP_Query(
-				array(
-					'post_type'           => 'post',
-					'posts_per_page'      => 3,
-					'post__not_in'        => array( get_the_ID() ),
-					'category__in'        => wp_get_post_categories( get_the_ID() ),
-					'ignore_sticky_posts' => 1,
-				)
+			$related_args = array(
+				'post_type'           => 'post',
+				'posts_per_page'      => 3,
+				'post__not_in'        => array( get_the_ID() ),
+				'ignore_sticky_posts' => 1,
 			);
+			$related_categories = wp_get_post_categories( get_the_ID() );
+
+			if ( $related_categories ) {
+				$related_args['category__in'] = $related_categories;
+			}
+
+			$related = new WP_Query( $related_args );
+
+			if ( ! $related->have_posts() && $related_categories ) {
+				wp_reset_postdata();
+				unset( $related_args['category__in'] );
+				$related = new WP_Query( $related_args );
+			}
 
 			if ( $related->have_posts() ) :
 				?>

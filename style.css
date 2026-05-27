@@ -1038,6 +1038,10 @@ textarea {
 	font-size: 0.85rem;
 }
 
+.reading-time::before {
+	content: " · ";
+}
+
 .single .site-main > .post,
 .page .site-main > .page,
 .archive .site-main > .post,
@@ -1812,6 +1816,10 @@ textarea {
 
 .pricing-card li + li {
 	margin-top: 0.45rem;
+}
+
+.pricing-card__button {
+	margin-top: 1rem;
 }
 
 .advertising-cta {

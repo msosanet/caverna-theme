@@ -24,6 +24,7 @@
 				<?php
 				caverna_posted_on();
 				caverna_posted_by();
+				caverna_reading_time_markup();
 				?>
 			</div><!-- .entry-meta -->
 			<div class="entry-categories">

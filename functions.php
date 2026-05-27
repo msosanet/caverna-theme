@@ -439,20 +439,25 @@ function caverna_default_ad( $format = 'horizontal' ) {
 	$is_vertical = 'vertical' === $format;
 	$horizontal  = get_template_directory_uri() . '/assets/ads/publicite-aqui-horizontal.png';
 	$vertical    = get_template_directory_uri() . '/assets/ads/publicite-aqui-vertical.png';
+	$horizontal_webp = get_template_directory_uri() . '/assets/ads/publicite-aqui-horizontal.webp';
+	$vertical_webp   = get_template_directory_uri() . '/assets/ads/publicite-aqui-vertical.webp';
 	$class       = $is_vertical ? 'caverna-house-ad--vertical' : 'caverna-house-ad--horizontal';
 	$ad_url      = caverna_advertising_url();
 	$image       = sprintf(
-		'<img src="%1$s" alt="%2$s" loading="eager" decoding="async" fetchpriority="high">',
+		'<picture><source srcset="%1$s" type="image/webp"><img src="%2$s" alt="%3$s" loading="eager" decoding="async" fetchpriority="high"></picture>',
+		esc_url( $horizontal_webp ),
 		esc_url( $is_vertical ? $vertical : $horizontal ),
 		esc_attr__( 'Publicite aqui en Caverna Radio', 'caverna' )
 	);
 
 	if ( $is_vertical ) {
 		$image = sprintf(
-			'<picture><source srcset="%1$s" media="(min-width: 64em)">%2$s</picture>',
+			'<picture><source srcset="%1$s" media="(min-width: 64em)" type="image/webp"><source srcset="%2$s" media="(min-width: 64em)">%3$s</picture>',
+			esc_url( $vertical_webp ),
 			esc_url( $vertical ),
 			sprintf(
-				'<img src="%1$s" alt="%2$s" loading="eager" decoding="async" fetchpriority="high">',
+				'<source srcset="%1$s" type="image/webp"><img src="%2$s" alt="%3$s" loading="eager" decoding="async" fetchpriority="high">',
+				esc_url( $horizontal_webp ),
 				esc_url( $horizontal ),
 				esc_attr__( 'Publicite aqui en Caverna Radio', 'caverna' )
 			)
@@ -464,6 +469,38 @@ function caverna_default_ad( $format = 'horizontal' ) {
 		esc_attr( $class ),
 		esc_url( $ad_url ),
 		$image
+	);
+}
+
+/**
+ * Estimate reading time for a post.
+ *
+ * @param int|null $post_id Post ID.
+ * @return int
+ */
+function caverna_reading_time_minutes( $post_id = null ) {
+	$post_id = $post_id ? $post_id : get_the_ID();
+	$content = get_post_field( 'post_content', $post_id );
+	$words   = str_word_count( wp_strip_all_tags( strip_shortcodes( $content ) ) );
+
+	return max( 1, (int) ceil( $words / 220 ) );
+}
+
+/**
+ * Render estimated reading time.
+ *
+ * @return void
+ */
+function caverna_reading_time_markup() {
+	printf(
+		'<span class="reading-time">%s</span>',
+		esc_html(
+			sprintf(
+				/* translators: %d: reading time in minutes. */
+				_n( '%d min de lectura', '%d min de lectura', caverna_reading_time_minutes(), 'caverna' ),
+				caverna_reading_time_minutes()
+			)
+		)
 	);
 }
 
@@ -628,7 +665,7 @@ function caverna_seo_meta() {
 	$request_uri = isset( $_SERVER['REQUEST_URI'] ) ? wp_unslash( $_SERVER['REQUEST_URI'] ) : '/';
 	$host        = isset( $_SERVER['HTTP_HOST'] ) ? wp_unslash( $_SERVER['HTTP_HOST'] ) : wp_parse_url( home_url(), PHP_URL_HOST );
 	$url         = set_url_scheme( 'http://' . $host . $request_uri );
-	$image       = get_template_directory_uri() . '/assets/ads/publicite-aqui-horizontal.png';
+	$image       = get_template_directory_uri() . '/assets/caverna-og.png';
 	$type        = 'website';
 
 	if ( is_singular() ) {

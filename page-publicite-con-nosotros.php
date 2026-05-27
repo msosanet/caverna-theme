@@ -93,29 +93,30 @@ $whatsapp     = caverna_advertising_whatsapp_number();
 		<section class="advertising-pricing content-layout content-layout--narrow">
 			<div class="advertising-copy">
 				<p class="advertising-kicker"><?php esc_html_e( 'Precios de lanzamiento', 'caverna' ); ?></p>
-				<h2><?php esc_html_e( 'Publicidad simple, directa y con beneficio para la comunidad.', 'caverna' ); ?></h2>
-				<p><?php esc_html_e( 'Nos interesa que las marcas se vean, pero tambien que nuestros oyentes y seguidores reciban algo a cambio: un sorteo, descuento, promo, beneficio o regalo que conecte tu marca con la comunidad de Caverna.', 'caverna' ); ?></p>
+				<h2><?php esc_html_e( 'Mensualidades simples, directas y con beneficio para la comunidad.', 'caverna' ); ?></h2>
+				<p><?php esc_html_e( 'Los valores son mensuales. Nos interesa que las marcas se vean, pero tambien que nuestros oyentes y seguidores reciban algo a cambio en redes sociales: un sorteo, descuento, promo, beneficio o regalo que conecte tu marca con la comunidad de Caverna.', 'caverna' ); ?></p>
 			</div>
 			<div class="advertising-pricing__grid">
 				<article class="pricing-card">
 					<p class="pricing-card__eyebrow"><?php esc_html_e( 'Spot publicitario', 'caverna' ); ?></p>
 					<h3><?php esc_html_e( '$50.000 ARS', 'caverna' ); ?></h3>
-					<p><?php esc_html_e( 'Un spot publicitario para radio online o presencia en nuestro sitio, segun el objetivo de la campana.', 'caverna' ); ?></p>
+					<p><?php esc_html_e( 'Mensualidad para un spot publicitario en radio online o presencia en nuestro sitio, segun el objetivo de la campana.', 'caverna' ); ?></p>
 					<ul>
 						<li><?php esc_html_e( 'Formato simple para arrancar rapido.', 'caverna' ); ?></li>
 						<li><?php esc_html_e( 'Puede aplicarse en radio online o web.', 'caverna' ); ?></li>
-						<li><?php esc_html_e( 'Incluye propuesta de regalo o beneficio para oyentes/seguidores.', 'caverna' ); ?></li>
+						<li><?php esc_html_e( 'Incluye propuesta de regalo o beneficio para seguidores en nuestras redes sociales.', 'caverna' ); ?></li>
 					</ul>
 				</article>
 				<article class="pricing-card pricing-card--featured">
 					<p class="pricing-card__eyebrow"><?php esc_html_e( 'Combo recomendado', 'caverna' ); ?></p>
 					<h3><?php esc_html_e( '$65.000 ARS', 'caverna' ); ?></h3>
-					<p><?php esc_html_e( 'Presencia combinada en radio online, pagina web y redes sociales para reforzar el mensaje en distintos puntos de contacto.', 'caverna' ); ?></p>
+					<p><?php esc_html_e( 'Mensualidad con presencia combinada en radio online, pagina web y redes sociales para reforzar el mensaje en distintos puntos de contacto.', 'caverna' ); ?></p>
 					<ul>
 						<li><?php esc_html_e( 'Radio online + sitio web + redes sociales.', 'caverna' ); ?></li>
 						<li><?php esc_html_e( 'Ideal para comercios, eventos, marcas locales y emprendimientos.', 'caverna' ); ?></li>
-						<li><?php esc_html_e( 'Incluye regalo, sorteo, promo o beneficio para que la audiencia tambien gane.', 'caverna' ); ?></li>
+						<li><?php esc_html_e( 'Incluye regalo, sorteo, promo o beneficio para que nuestros seguidores tambien ganen.', 'caverna' ); ?></li>
 					</ul>
+					<a class="advertising-button pricing-card__button" href="<?php echo esc_url( $contact_href ); ?>" target="_blank" rel="noopener"><?php esc_html_e( 'Consultar este combo', 'caverna' ); ?></a>
 				</article>
 			</div>
 		</section>

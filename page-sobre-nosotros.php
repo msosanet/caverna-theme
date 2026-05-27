@@ -11,22 +11,22 @@ get_header();
 	<main id="primary" class="site-main about-page">
 		<section class="about-hero content-layout content-layout--narrow">
 			<p class="advertising-kicker"><?php esc_html_e( 'Sobre nosotros', 'caverna' ); ?></p>
-			<h1><?php esc_html_e( 'Caverna Radio es comunicacion alternativa desde Ushuaia.', 'caverna' ); ?></h1>
-			<p><?php esc_html_e( 'Hacemos radio online, notas, cultura, cannabis, tecnologia, podcasts y contenidos independientes para una audiencia que busca otra forma de informarse y encontrarse.', 'caverna' ); ?></p>
+			<h1><?php esc_html_e( 'Caverna Radio es un medio independiente de comunicacion y entretenimiento desde Ushuaia.', 'caverna' ); ?></h1>
+			<p><?php esc_html_e( 'Somos propiedad de Surco.Ar, agencia de marketing, SEO y desarrollo web. No buscamos ser un portfolio: queremos construir un medio con servicios de comunicacion, contenidos, radio online y entretenimiento para una comunidad que busca otras perspectivas.', 'caverna' ); ?></p>
 		</section>
 
 		<section class="about-grid content-layout content-layout--narrow">
 			<article>
-				<h2><?php esc_html_e( 'Que hacemos', 'caverna' ); ?></h2>
-				<p><?php esc_html_e( 'Publicamos contenidos propios, acompanamos actividades locales y abrimos espacio para voces, proyectos y comunidades que no siempre entran en los medios tradicionales.', 'caverna' ); ?></p>
+				<h2><?php esc_html_e( 'Linea editorial', 'caverna' ); ?></h2>
+				<p><?php esc_html_e( 'Buscamos exponer perspectivas que los medios tradicionales no siempre pueden tocar por su propia linea de negocios. Abrimos espacio para temas, voces y enfoques que necesitan otra forma de circulacion.', 'caverna' ); ?></p>
 			</article>
 			<article>
-				<h2><?php esc_html_e( 'Por que digital', 'caverna' ); ?></h2>
-				<p><?php esc_html_e( 'El sitio y la radio online permiten que cada nota, campana o accion siga visible, pueda compartirse y llegue a la audiencia cuando vuelve al contenido.', 'caverna' ); ?></p>
+				<h2><?php esc_html_e( 'Que ofrecemos', 'caverna' ); ?></h2>
+				<p><?php esc_html_e( 'Brindamos contenidos, radio online, acciones comerciales, difusion digital y propuestas de comunicacion para marcas, proyectos, eventos y comunidades.', 'caverna' ); ?></p>
 			</article>
 			<article>
-				<h2><?php esc_html_e( 'Como participar', 'caverna' ); ?></h2>
-				<p><?php esc_html_e( 'Podes escribirnos para acercar noticias, sumarte con propuestas editoriales, difundir eventos o consultar opciones para publicitar.', 'caverna' ); ?></p>
+				<h2><?php esc_html_e( 'Contacto', 'caverna' ); ?></h2>
+				<p><?php esc_html_e( 'Estamos en Ushuaia y se puede contactar al telefono comercial de Surco.Ar para propuestas, prensa, contenidos o publicidad.', 'caverna' ); ?></p>
 			</article>
 		</section>
 
