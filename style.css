@@ -930,8 +930,18 @@ textarea {
 
 .home-featured {
 	display: grid;
-	gap: 2rem;
+	gap: 1rem 2rem;
 	margin: 0;
+}
+
+.home-featured__header {
+	grid-column: 1 / -1;
+}
+
+.home-featured__header .section-title {
+	margin-bottom: 0;
+	max-width: 100%;
+	overflow-wrap: break-word;
 }
 
 .secondary-grid {
@@ -947,6 +957,21 @@ textarea {
 	.secondary-grid {
 		grid-column: 1 / -1;
 		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+}
+
+@media screen and (min-width: 90em) {
+	.home-featured--principal,
+	.home-featured--editorials {
+		max-width: 1440px;
+	}
+
+	.home-featured--principal {
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+
+	.home-featured--editorials .secondary-grid {
+		grid-template-columns: repeat(5, minmax(0, 1fr));
 	}
 }
 
@@ -1441,6 +1466,13 @@ textarea {
 	.secondary-card .entry-title,
 	.latest-item .entry-title {
 		font-size: 1.25rem;
+	}
+
+	.section-title {
+		max-width: 72vw;
+		font-size: 1.35rem;
+		letter-spacing: 0.04em;
+		overflow-wrap: break-word;
 	}
 
 	.ad-banner {

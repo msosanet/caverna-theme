@@ -36,7 +36,7 @@ get_header();
 			$principal_query = new WP_Query(
 				array(
 					'post_type'           => 'post',
-					'posts_per_page'      => 2,
+					'posts_per_page'      => 3,
 					'cat'                 => (int) $principal_term->term_id,
 					'ignore_sticky_posts' => 1,
 				)
@@ -45,7 +45,11 @@ get_header();
 
 		if ( $principal_query && $principal_query->have_posts() ) :
 			?>
-			<section class="home-featured content-layout">
+			<section class="home-featured home-featured--principal content-layout">
+				<header class="home-featured__header">
+					<p class="advertising-kicker"><?php esc_html_e( 'Seleccion editorial', 'caverna' ); ?></p>
+					<h2 class="section-title"><?php esc_html_e( 'Destacadas', 'caverna' ); ?></h2>
+				</header>
 				<?php
 				$counter        = 0;
 
@@ -67,7 +71,7 @@ get_header();
 			$secondary_query = new WP_Query(
 				array(
 					'post_type'           => 'post',
-					'posts_per_page'      => 3,
+					'posts_per_page'      => 5,
 					'cat'                 => (int) $featured_term->term_id,
 					'post__not_in'        => $featured_ids,
 					'ignore_sticky_posts' => 1,
@@ -77,7 +81,11 @@ get_header();
 
 		if ( $secondary_query && $secondary_query->have_posts() ) :
 			?>
-			<section class="home-featured content-layout">
+			<section class="home-featured home-featured--editorials content-layout">
+				<header class="home-featured__header">
+					<p class="advertising-kicker"><?php esc_html_e( 'Para no perderse', 'caverna' ); ?></p>
+					<h2 class="section-title"><?php esc_html_e( 'Editoriales destacadas', 'caverna' ); ?></h2>
+				</header>
 				<div class="secondary-grid">
 					<?php
 					while ( $secondary_query->have_posts() ) :
