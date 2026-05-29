@@ -28,44 +28,9 @@ get_header();
 			$featured_term = get_term_by( 'name', 'Destacados', 'category' );
 		}
 
-		$featured_ids     = array();
-		$principal_query  = null;
-		$secondary_query  = null;
-
-		if ( $principal_term ) {
-			$principal_query = new WP_Query(
-				array(
-					'post_type'           => 'post',
-					'posts_per_page'      => 3,
-					'cat'                 => (int) $principal_term->term_id,
-					'ignore_sticky_posts' => 1,
-				)
-			);
-		}
-
-		if ( $principal_query && $principal_query->have_posts() ) :
-			?>
-			<section class="home-featured home-featured--principal content-layout">
-				<header class="home-featured__header">
-					<p class="advertising-kicker"><?php esc_html_e( 'Seleccion editorial', 'caverna' ); ?></p>
-					<h2 class="section-title"><?php esc_html_e( 'Destacadas', 'caverna' ); ?></h2>
-				</header>
-				<?php
-				$counter        = 0;
-
-				while ( $principal_query->have_posts() ) :
-					$principal_query->the_post();
-					$counter++;
-					$featured_ids[] = get_the_ID();
-
-					get_template_part( 'template-parts/content', 'featured' );
-				endwhile;
-				?>
-			</section>
-			<?php
-		endif;
-
-		wp_reset_postdata();
+		$featured_ids    = array();
+		$principal_query = null;
+		$secondary_query = null;
 
 		if ( $featured_term ) {
 			$secondary_query = new WP_Query(
@@ -73,7 +38,6 @@ get_header();
 					'post_type'           => 'post',
 					'posts_per_page'      => 5,
 					'cat'                 => (int) $featured_term->term_id,
-					'post__not_in'        => $featured_ids,
 					'ignore_sticky_posts' => 1,
 				)
 			);
@@ -95,6 +59,39 @@ get_header();
 					endwhile;
 					?>
 				</div>
+			</section>
+			<?php
+		endif;
+
+		wp_reset_postdata();
+
+		if ( $principal_term ) {
+			$principal_query = new WP_Query(
+				array(
+					'post_type'           => 'post',
+					'posts_per_page'      => 3,
+					'cat'                 => (int) $principal_term->term_id,
+					'post__not_in'        => $featured_ids,
+					'ignore_sticky_posts' => 1,
+				)
+			);
+		}
+
+		if ( $principal_query && $principal_query->have_posts() ) :
+			?>
+			<section class="home-featured home-featured--principal content-layout">
+				<header class="home-featured__header">
+					<p class="advertising-kicker"><?php esc_html_e( 'Seleccion editorial', 'caverna' ); ?></p>
+					<h2 class="section-title"><?php esc_html_e( 'Destacadas', 'caverna' ); ?></h2>
+				</header>
+				<?php
+				while ( $principal_query->have_posts() ) :
+					$principal_query->the_post();
+					$featured_ids[] = get_the_ID();
+
+					get_template_part( 'template-parts/content', 'featured' );
+				endwhile;
+				?>
 			</section>
 			<?php
 		endif;
