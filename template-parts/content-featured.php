@@ -12,10 +12,13 @@
 			<a href="<?php the_permalink(); ?>" aria-hidden="true" tabindex="-1">
 				<?php the_post_thumbnail( 'large' ); ?>
 			</a>
+		<?php else : ?>
+			<?php caverna_post_visual_fallback( 'post-visual-fallback--featured' ); ?>
 		<?php endif; ?>
 	</div>
 	<div class="featured-content">
 		<header class="entry-header">
+			<?php caverna_card_meta(); ?>
 			<?php the_title( '<h2 class="entry-title"><a href="' . esc_url( get_permalink() ) . '" rel="bookmark">', '</a></h2>' ); ?>
 			<?php if ( 'post' === get_post_type() ) : ?>
 				<div class="entry-meta">

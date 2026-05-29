@@ -11,9 +11,12 @@
 		<a class="latest-thumb" href="<?php the_permalink(); ?>" aria-hidden="true" tabindex="-1">
 			<?php the_post_thumbnail( 'thumbnail' ); ?>
 		</a>
+	<?php else : ?>
+		<?php caverna_post_visual_fallback( 'post-visual-fallback--latest' ); ?>
 	<?php endif; ?>
 	<div class="latest-content">
 		<header class="entry-header">
+			<?php caverna_card_meta(); ?>
 			<?php the_title( '<h3 class="entry-title"><a href="' . esc_url( get_permalink() ) . '" rel="bookmark">', '</a></h3>' ); ?>
 			<?php if ( 'post' === get_post_type() ) : ?>
 				<div class="entry-meta">

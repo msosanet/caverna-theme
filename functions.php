@@ -505,6 +505,42 @@ function caverna_reading_time_markup() {
 }
 
 /**
+ * Render compact post metadata for cards.
+ *
+ * @return void
+ */
+function caverna_card_meta() {
+	if ( 'post' !== get_post_type() ) {
+		return;
+	}
+	?>
+	<div class="card-meta">
+		<?php
+		$categories = get_the_category();
+		if ( $categories ) :
+			?>
+			<a class="card-meta__category" href="<?php echo esc_url( get_category_link( $categories[0] ) ); ?>"><?php echo esc_html( $categories[0]->name ); ?></a>
+		<?php endif; ?>
+		<?php caverna_reading_time_markup(); ?>
+	</div>
+	<?php
+}
+
+/**
+ * Render branded fallback when a post has no thumbnail.
+ *
+ * @param string $class_name Extra class name.
+ * @return void
+ */
+function caverna_post_visual_fallback( $class_name = '' ) {
+	?>
+	<a class="post-visual-fallback <?php echo esc_attr( $class_name ); ?>" href="<?php the_permalink(); ?>" aria-label="<?php the_title_attribute(); ?>">
+		<span><?php esc_html_e( 'Caverna Radio', 'caverna' ); ?></span>
+	</a>
+	<?php
+}
+
+/**
  * Get the advertising landing page URL, falling back to email.
  *
  * @return string
