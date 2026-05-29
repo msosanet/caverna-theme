@@ -102,21 +102,53 @@ $whatsapp     = caverna_advertising_whatsapp_number();
 					<h3><?php esc_html_e( '$50.000 ARS', 'caverna' ); ?></h3>
 					<p><?php esc_html_e( 'Mensualidad para un spot publicitario en radio online o presencia en nuestro sitio, segun el objetivo de la campana.', 'caverna' ); ?></p>
 					<ul>
+						<li><?php esc_html_e( 'Vigencia mensual desde la activacion.', 'caverna' ); ?></li>
 						<li><?php esc_html_e( 'Formato simple para arrancar rapido.', 'caverna' ); ?></li>
 						<li><?php esc_html_e( 'Puede aplicarse en radio online o web.', 'caverna' ); ?></li>
 						<li><?php esc_html_e( 'Incluye propuesta de regalo o beneficio para seguidores en nuestras redes sociales.', 'caverna' ); ?></li>
 					</ul>
+					<a class="read-more-link pricing-card__button" href="<?php echo esc_url( $contact_href ); ?>" target="_blank" rel="noopener"><?php esc_html_e( 'Consultar spot', 'caverna' ); ?></a>
 				</article>
 				<article class="pricing-card pricing-card--featured">
 					<p class="pricing-card__eyebrow"><?php esc_html_e( 'Combo recomendado', 'caverna' ); ?></p>
 					<h3><?php esc_html_e( '$65.000 ARS', 'caverna' ); ?></h3>
 					<p><?php esc_html_e( 'Mensualidad con presencia combinada en radio online, pagina web y redes sociales para reforzar el mensaje en distintos puntos de contacto.', 'caverna' ); ?></p>
 					<ul>
+						<li><?php esc_html_e( 'Vigencia mensual desde la activacion.', 'caverna' ); ?></li>
 						<li><?php esc_html_e( 'Radio online + sitio web + redes sociales.', 'caverna' ); ?></li>
 						<li><?php esc_html_e( 'Ideal para comercios, eventos, marcas locales y emprendimientos.', 'caverna' ); ?></li>
 						<li><?php esc_html_e( 'Incluye regalo, sorteo, promo o beneficio para que nuestros seguidores tambien ganen.', 'caverna' ); ?></li>
 					</ul>
 					<a class="advertising-button pricing-card__button" href="<?php echo esc_url( $contact_href ); ?>" target="_blank" rel="noopener"><?php esc_html_e( 'Consultar este combo', 'caverna' ); ?></a>
+				</article>
+			</div>
+			<div class="advertising-pricing__note">
+				<p><?php esc_html_e( 'Valores expresados en pesos argentinos. Precios sujetos a actualizacion. La publicacion se coordina luego de recibir el material o acordar la pieza con el anunciante.', 'caverna' ); ?></p>
+				<a class="advertising-button" href="<?php echo esc_url( $contact_href ); ?>" target="_blank" rel="noopener"><?php esc_html_e( 'Quiero publicitar este mes', 'caverna' ); ?></a>
+			</div>
+		</section>
+
+		<section class="advertising-faq content-layout content-layout--narrow">
+			<div class="advertising-copy">
+				<p class="advertising-kicker"><?php esc_html_e( 'Preguntas frecuentes', 'caverna' ); ?></p>
+				<h2><?php esc_html_e( 'Como funciona la pauta.', 'caverna' ); ?></h2>
+			</div>
+			<div class="advertising-faq__grid">
+				<article>
+					<h3><?php esc_html_e( 'Que tengo que enviar?', 'caverna' ); ?></h3>
+					<p><?php esc_html_e( 'Podes enviar logo, pieza grafica, texto, link, promo o datos principales de la campana. Si no tenes todo armado, lo coordinamos por WhatsApp.', 'caverna' ); ?></p>
+				</article>
+				<article>
+					<h3><?php esc_html_e( 'Cuando se activa?', 'caverna' ); ?></h3>
+					<p><?php esc_html_e( 'La pauta se activa cuando queda confirmado el material y acordada la fecha de inicio mensual.', 'caverna' ); ?></p>
+				</article>
+				<article>
+					<h3><?php esc_html_e( 'Como funciona el regalo?', 'caverna' ); ?></h3>
+					<p><?php esc_html_e( 'La marca propone un regalo, sorteo, descuento o beneficio. Nosotros lo comunicamos en redes para que nuestros seguidores tambien reciban valor.', 'caverna' ); ?></p>
+				</article>
+				<article>
+					<h3><?php esc_html_e( 'Puedo cambiar la pieza?', 'caverna' ); ?></h3>
+					<p><?php esc_html_e( 'Si la campana lo necesita, podemos ajustar textos o piezas durante el mes para mantener la comunicacion actualizada.', 'caverna' ); ?></p>
 				</article>
 			</div>
 		</section>
