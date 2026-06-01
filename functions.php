@@ -649,6 +649,54 @@ function caverna_newsletter_admin_export_link() {
 add_action( 'admin_notices', 'caverna_newsletter_admin_export_link' );
 
 /**
+ * Render popular posts for inline home placement.
+ *
+ * @param array $exclude_ids Post IDs to exclude.
+ * @return void
+ */
+function caverna_render_popular_posts_block( $exclude_ids = array() ) {
+	$query_args = array(
+		'post_type'           => 'post',
+		'posts_per_page'      => 4,
+		'orderby'             => 'comment_count date',
+		'order'               => 'DESC',
+		'post__not_in'        => array_map( 'absint', $exclude_ids ),
+		'ignore_sticky_posts' => 1,
+	);
+
+	$popular_query = new WP_Query( $query_args );
+
+	if ( ! $popular_query->have_posts() && ! empty( $query_args['post__not_in'] ) ) {
+		unset( $query_args['post__not_in'] );
+		$popular_query = new WP_Query( $query_args );
+	}
+
+	if ( ! $popular_query->have_posts() ) {
+		return;
+	}
+	?>
+	<section class="popular-inline home-section--popular">
+		<div class="home-section__header">
+			<div>
+				<p class="advertising-kicker"><?php esc_html_e( 'Lecturas recomendadas', 'caverna' ); ?></p>
+				<h2 class="section-title"><?php esc_html_e( 'Mas leidas y comentadas', 'caverna' ); ?></h2>
+			</div>
+			<a class="read-more-link" href="<?php echo esc_url( get_permalink( get_option( 'page_for_posts' ) ) ? get_permalink( get_option( 'page_for_posts' ) ) : home_url( '/' ) ); ?>"><?php esc_html_e( 'Ver archivo', 'caverna' ); ?></a>
+		</div>
+		<div class="secondary-grid secondary-grid--compact">
+			<?php
+			while ( $popular_query->have_posts() ) :
+				$popular_query->the_post();
+				get_template_part( 'template-parts/content', 'secondary' );
+			endwhile;
+			wp_reset_postdata();
+			?>
+		</div>
+	</section>
+	<?php
+}
+
+/**
  * Pick between adsense and own ad on each page load.
  *
  * @param string $adsense AdSense or external ad code.

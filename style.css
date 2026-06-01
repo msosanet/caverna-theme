@@ -2096,6 +2096,20 @@ textarea:focus-visible {
 	border-top: 1px solid rgba(240, 0, 184, 0.22);
 }
 
+.popular-inline {
+	display: grid;
+	gap: 1rem;
+	margin: 1.5rem 0;
+	padding: 1.25rem;
+	border: 1px solid rgba(240, 0, 184, 0.24);
+	border-radius: 12px;
+	background: rgba(240, 0, 184, 0.05);
+}
+
+.popular-inline .secondary-grid {
+	width: 100%;
+}
+
 .home-section__header {
 	display: flex;
 	flex-wrap: wrap;

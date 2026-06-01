@@ -147,15 +147,20 @@ get_header();
 					<?php
 					if ( $latest_query->have_posts() ) :
 						$latest_count         = 0;
+						$latest_seen_ids      = array();
 						$newsletter_rendered  = false;
+						$popular_rendered     = false;
 						while ( $latest_query->have_posts() ) :
 							$latest_query->the_post();
 							$latest_count++;
+							$latest_seen_ids[] = get_the_ID();
 							get_template_part( 'template-parts/content', 'list' );
 
 							if ( ! $newsletter_rendered && 2 === $latest_count ) :
 								caverna_newsletter_form( 'inline' );
 								$newsletter_rendered = true;
+								caverna_render_popular_posts_block( array_merge( $featured_ids, $latest_seen_ids ) );
+								$popular_rendered = true;
 							endif;
 
 							if ( 0 === $latest_count % 5 ) :
@@ -187,6 +192,12 @@ get_header();
 
 						if ( ! $newsletter_rendered && $latest_count > 0 ) :
 							caverna_newsletter_form( 'inline' );
+							caverna_render_popular_posts_block( array_merge( $featured_ids, $latest_seen_ids ) );
+							$popular_rendered = true;
+						endif;
+
+						if ( ! $popular_rendered && $latest_count > 0 ) :
+							caverna_render_popular_posts_block( array_merge( $featured_ids, $latest_seen_ids ) );
 						endif;
 					else :
 						get_template_part( 'template-parts/content', 'none' );
@@ -243,40 +254,6 @@ get_header();
 
 		<?php
 		wp_reset_postdata();
-		$popular_query = new WP_Query(
-			array(
-				'post_type'           => 'post',
-				'posts_per_page'      => 4,
-				'orderby'             => 'comment_count date',
-				'order'               => 'DESC',
-				'post__not_in'        => $featured_ids,
-				'ignore_sticky_posts' => 1,
-			)
-		);
-
-		if ( $popular_query->have_posts() ) :
-			?>
-			<section class="home-section home-section--popular content-layout">
-				<div class="home-section__header">
-					<div>
-						<p class="advertising-kicker"><?php esc_html_e( 'Lecturas recomendadas', 'caverna' ); ?></p>
-						<h2 class="section-title"><?php esc_html_e( 'Mas leidas y comentadas', 'caverna' ); ?></h2>
-					</div>
-					<a class="read-more-link" href="<?php echo esc_url( get_permalink( get_option( 'page_for_posts' ) ) ? get_permalink( get_option( 'page_for_posts' ) ) : home_url( '/' ) ); ?>"><?php esc_html_e( 'Ver archivo', 'caverna' ); ?></a>
-				</div>
-				<div class="secondary-grid secondary-grid--compact">
-					<?php
-					while ( $popular_query->have_posts() ) :
-						$popular_query->the_post();
-						get_template_part( 'template-parts/content', 'secondary' );
-					endwhile;
-					wp_reset_postdata();
-					?>
-				</div>
-			</section>
-			<?php
-		endif;
-
 		$home_sections = array(
 			array(
 				'slug'  => 'cannabis',
