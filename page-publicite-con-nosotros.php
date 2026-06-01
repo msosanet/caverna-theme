@@ -10,9 +10,17 @@ get_header();
 $contact_name = caverna_advertising_contact_name();
 $contact_href = caverna_advertising_whatsapp_url();
 $whatsapp     = caverna_advertising_whatsapp_number();
+$format_rows  = array(
+	array( __( 'Spot en radio online', 'caverna' ), __( 'Audio mensual', 'caverna' ), __( 'Recordacion de marca y promociones simples.', 'caverna' ) ),
+	array( __( 'Banner web horizontal', 'caverna' ), __( 'Portada y notas', 'caverna' ), __( 'Visibilidad continua mientras la audiencia lee.', 'caverna' ) ),
+	array( __( 'Banner lateral', 'caverna' ), __( 'Desktop y secciones', 'caverna' ), __( 'Presencia sostenida para comercios y eventos.', 'caverna' ) ),
+	array( __( 'Combo web + radio + redes', 'caverna' ), __( 'Mensualidad integrada', 'caverna' ), __( 'Campanas locales con mas puntos de contacto.', 'caverna' ) ),
+);
 ?>
 
 	<main id="primary" class="site-main advertising-page">
+		<a class="advertising-sticky-cta" href="<?php echo esc_url( $contact_href ); ?>" target="_blank" rel="noopener"><?php esc_html_e( 'Publicitar por WhatsApp', 'caverna' ); ?></a>
+
 		<section class="advertising-hero content-layout content-layout--narrow">
 			<div class="advertising-hero__content">
 				<p class="advertising-kicker"><?php esc_html_e( 'Publicidad en Caverna Radio', 'caverna' ); ?></p>
@@ -58,6 +66,21 @@ $whatsapp     = caverna_advertising_whatsapp_number();
 			</div>
 		</section>
 
+		<section class="advertising-metrics content-layout content-layout--narrow" aria-label="<?php esc_attr_e( 'Indicadores comerciales', 'caverna' ); ?>">
+			<article>
+				<strong><?php esc_html_e( 'Ushuaia', 'caverna' ); ?></strong>
+				<span><?php esc_html_e( 'Identidad local y cercania con marcas de la ciudad.', 'caverna' ); ?></span>
+			</article>
+			<article>
+				<strong><?php esc_html_e( 'Web + radio + redes', 'caverna' ); ?></strong>
+				<span><?php esc_html_e( 'Presencia combinada para no depender de un solo canal.', 'caverna' ); ?></span>
+			</article>
+			<article>
+				<strong><?php esc_html_e( 'Mensual', 'caverna' ); ?></strong>
+				<span><?php esc_html_e( 'Pauta simple de activar, revisar y renovar.', 'caverna' ); ?></span>
+			</article>
+		</section>
+
 		<section class="advertising-preview content-layout">
 			<div class="advertising-preview__main">
 				<?php echo caverna_default_ad( 'horizontal' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
@@ -86,6 +109,27 @@ $whatsapp     = caverna_advertising_whatsapp_number();
 						<h2><?php echo esc_html( $package['title'] ); ?></h2>
 						<p><?php echo esc_html( $package['text'] ); ?></p>
 					</article>
+				<?php endforeach; ?>
+			</div>
+		</section>
+
+		<section class="advertising-comparison content-layout content-layout--narrow">
+			<div class="advertising-copy">
+				<p class="advertising-kicker"><?php esc_html_e( 'Formatos disponibles', 'caverna' ); ?></p>
+				<h2><?php esc_html_e( 'Comparativa rapida para elegir donde empezar.', 'caverna' ); ?></h2>
+			</div>
+			<div class="advertising-table" role="table" aria-label="<?php esc_attr_e( 'Comparativa de formatos publicitarios', 'caverna' ); ?>">
+				<div role="row">
+					<strong role="columnheader"><?php esc_html_e( 'Formato', 'caverna' ); ?></strong>
+					<strong role="columnheader"><?php esc_html_e( 'Ubicacion', 'caverna' ); ?></strong>
+					<strong role="columnheader"><?php esc_html_e( 'Objetivo', 'caverna' ); ?></strong>
+				</div>
+				<?php foreach ( $format_rows as $row ) : ?>
+					<div role="row">
+						<span role="cell"><?php echo esc_html( $row[0] ); ?></span>
+						<span role="cell"><?php echo esc_html( $row[1] ); ?></span>
+						<span role="cell"><?php echo esc_html( $row[2] ); ?></span>
+					</div>
 				<?php endforeach; ?>
 			</div>
 		</section>

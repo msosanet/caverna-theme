@@ -810,6 +810,15 @@ textarea {
 	color: var(--color-accent-2);
 }
 
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+	outline: 3px solid var(--color-accent-2);
+	outline-offset: 3px;
+}
+
 /* Small menu. */
 .menu-toggle,
 .main-navigation.toggled ul {
@@ -2156,7 +2165,10 @@ textarea {
 }
 
 .search-form label {
+	display: grid;
+	gap: 0.35rem;
 	flex: 1 1 220px;
+	font-weight: 700;
 }
 
 .search-field {
@@ -2230,12 +2242,22 @@ textarea {
 
 .newsletter-form {
 	display: grid;
-	grid-template-columns: minmax(0, 1fr) auto;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
 	gap: 0.75rem;
 	align-items: start;
 	max-width: 680px;
 }
 
+.newsletter-form label,
+.newsletter-interests,
+.newsletter-consent {
+	display: grid;
+	gap: 0.35rem;
+	color: var(--color-text);
+	font-weight: 700;
+}
+
+.newsletter-form input[type="text"],
 .newsletter-form input[type="email"] {
 	width: 100%;
 	min-width: 0;
@@ -2244,6 +2266,39 @@ textarea {
 	border-color: rgba(240, 0, 184, 0.28);
 	border-radius: 8px;
 	box-sizing: border-box;
+}
+
+.newsletter-interests,
+.newsletter-consent,
+.newsletter-form button,
+.newsletter-message {
+	grid-column: 1 / -1;
+}
+
+.newsletter-interests {
+	margin: 0;
+	padding: 0.75rem;
+	border: 1px solid rgba(240, 0, 184, 0.22);
+	border-radius: 8px;
+}
+
+.newsletter-interests legend {
+	padding: 0 0.35rem;
+	color: var(--color-accent-2);
+}
+
+.newsletter-interests label,
+.newsletter-consent {
+	display: flex;
+	align-items: flex-start;
+	gap: 0.5rem;
+	font-weight: 600;
+}
+
+.newsletter-interests input,
+.newsletter-consent input {
+	flex: 0 0 auto;
+	margin-top: 0.22rem;
 }
 
 .newsletter-form button {
@@ -2258,9 +2313,83 @@ textarea {
 }
 
 .newsletter-message {
-	grid-column: 1 / -1;
 	margin: 0;
 	color: var(--color-accent-2);
+}
+
+.advertising-sticky-cta {
+	position: fixed;
+	right: 1rem;
+	bottom: 1rem;
+	z-index: 50;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 48px;
+	padding: 0.75rem 1rem;
+	border: 1px solid rgba(255, 230, 0, 0.55);
+	border-radius: 999px;
+	background: var(--color-accent-2);
+	color: #130006;
+	font-weight: 900;
+	text-decoration: none;
+	box-shadow: 0 16px 36px rgba(0, 0, 0, 0.34);
+}
+
+.advertising-sticky-cta:hover,
+.advertising-sticky-cta:focus {
+	color: #130006;
+	transform: translateY(-1px);
+}
+
+.advertising-metrics {
+	display: grid;
+	gap: 1rem;
+}
+
+.advertising-metrics article,
+.advertising-comparison {
+	border: 1px solid rgba(240, 0, 184, 0.24);
+	border-radius: 12px;
+	background: rgba(255, 255, 255, 0.04);
+	padding: 1.1rem;
+}
+
+.advertising-metrics strong,
+.advertising-metrics span {
+	display: block;
+}
+
+.advertising-metrics strong {
+	color: var(--color-accent-2);
+	font-size: 1.2rem;
+}
+
+.advertising-metrics span {
+	margin-top: 0.35rem;
+	color: var(--color-muted);
+}
+
+.advertising-table {
+	display: grid;
+	gap: 0.5rem;
+	margin-top: 1rem;
+}
+
+.advertising-table [role="row"] {
+	display: grid;
+	grid-template-columns: minmax(130px, 0.85fr) minmax(130px, 0.75fr) minmax(0, 1.4fr);
+	gap: 0.75rem;
+	padding: 0.75rem;
+	border: 1px solid rgba(255, 230, 0, 0.18);
+	border-radius: 8px;
+	background: rgba(18, 6, 15, 0.72);
+}
+
+.advertising-table [role="columnheader"],
+.advertising-table [role="cell"]:first-child {
+	color: var(--color-accent-2);
+	font-weight: 800;
 }
 
 .newsletter-message--error {
@@ -2268,6 +2397,10 @@ textarea {
 }
 
 @media screen and (min-width: 64em) {
+	.advertising-metrics {
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+
 	.advertising-preview {
 		grid-template-columns: minmax(0, 1fr) 320px;
 	}
@@ -2309,6 +2442,8 @@ textarea {
 	.contact-hero__content,
 	.about-hero,
 	.advertising-benefits article,
+	.advertising-metrics article,
+	.advertising-comparison,
 	.advertising-why,
 	.advertising-options article,
 	.pricing-card,
@@ -2318,8 +2453,8 @@ textarea {
 	.about-grid article,
 	.newsletter-signup__content,
 	.newsletter-form {
-		width: 72vw;
-		max-width: 72vw;
+		width: calc(100vw - 2rem);
+		max-width: calc(100vw - 2rem);
 	}
 
 	.advertising-hero h1,
@@ -2363,6 +2498,16 @@ textarea {
 		grid-template-columns: 1fr;
 	}
 
+	.advertising-table [role="row"] {
+		grid-template-columns: 1fr;
+	}
+
+	.advertising-sticky-cta {
+		left: 1rem;
+		right: 1rem;
+		border-radius: 10px;
+	}
+
 	.contact-grid {
 		grid-template-columns: 1fr;
 	}
@@ -2376,7 +2521,7 @@ textarea {
 	.newsletter-signup--inline .newsletter-signup__content p,
 	.newsletter-signup--inline .newsletter-signup__content h2 {
 		width: 100%;
-		max-width: 68vw;
+		max-width: 100%;
 	}
 
 	.newsletter-signup--inline .newsletter-form {

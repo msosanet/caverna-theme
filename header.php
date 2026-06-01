@@ -29,7 +29,7 @@
 		<div class="site-header-inner">
 			<div class="site-branding">
 				<div class="site-logo">
-					<?php the_custom_logo(); ?>
+					<?php caverna_header_logo_markup(); ?>
 				</div>
 				<?php
 				if ( is_front_page() && is_home() ) :
