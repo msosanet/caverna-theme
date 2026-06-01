@@ -37,6 +37,8 @@ function caverna_customize_register( $wp_customize ) {
 			'facebook'  => __( 'Facebook', 'caverna' ),
 			'youtube'   => __( 'YouTube', 'caverna' ),
 			'tiktok'    => __( 'TikTok', 'caverna' ),
+			'x'         => __( 'X / Twitter', 'caverna' ),
+			'spotify'   => __( 'Spotify', 'caverna' ),
 		) as $network => $label
 	) {
 		$wp_customize->add_setting(

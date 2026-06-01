@@ -810,6 +810,57 @@ textarea {
 	color: var(--color-accent-2);
 }
 
+.header-social-links {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.45rem;
+}
+
+.header-social-links a {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 2.4rem;
+	height: 2.4rem;
+	border: 1px solid rgba(255, 230, 0, 0.35);
+	border-radius: 999px;
+	background: rgba(26, 8, 23, 0.72);
+	color: var(--color-accent-2);
+	text-decoration: none;
+}
+
+.header-social-links a:hover,
+.header-social-links a:focus {
+	background: var(--color-accent-2);
+	color: #130006;
+}
+
+.header-social-links svg,
+.footer-social-links svg,
+.contact-social-links svg {
+	display: block;
+	width: 1.15rem;
+	height: 1.15rem;
+	fill: none;
+	stroke: currentColor;
+	stroke-width: 1.8;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+}
+
+.header-social-links span {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
+}
+
 a:focus-visible,
 button:focus-visible,
 input:focus-visible,
@@ -1486,6 +1537,11 @@ textarea:focus-visible {
 		width: 100%;
 	}
 
+	.header-social-links {
+		width: 100%;
+		justify-content: center;
+	}
+
 	.menu-toggle {
 		width: 100%;
 	}
@@ -1647,7 +1703,7 @@ textarea:focus-visible {
 .contact-social-links {
 	display: flex;
 	flex-wrap: wrap;
-	gap: 0.5rem;
+	gap: 0.45rem;
 }
 
 .footer-social-links {

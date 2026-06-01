@@ -910,6 +910,8 @@ function caverna_social_links() {
 		'facebook'  => __( 'Facebook', 'caverna' ),
 		'youtube'   => __( 'YouTube', 'caverna' ),
 		'tiktok'    => __( 'TikTok', 'caverna' ),
+		'x'         => __( 'X / Twitter', 'caverna' ),
+		'spotify'   => __( 'Spotify', 'caverna' ),
 	);
 	$links    = array();
 
@@ -941,11 +943,33 @@ function caverna_social_links_markup( $class_name = 'social-links' ) {
 	}
 	?>
 	<nav class="<?php echo esc_attr( $class_name ); ?>" aria-label="<?php esc_attr_e( 'Redes sociales', 'caverna' ); ?>">
-		<?php foreach ( $links as $link ) : ?>
-			<a href="<?php echo esc_url( $link['url'] ); ?>" target="_blank" rel="noopener"><?php echo esc_html( $link['label'] ); ?></a>
+		<?php foreach ( $links as $network => $link ) : ?>
+			<a href="<?php echo esc_url( $link['url'] ); ?>" target="_blank" rel="noopener" aria-label="<?php echo esc_attr( $link['label'] ); ?>">
+				<?php echo caverna_social_icon( $network ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+				<span><?php echo esc_html( $link['label'] ); ?></span>
+			</a>
 		<?php endforeach; ?>
 	</nav>
 	<?php
+}
+
+/**
+ * Return a compact SVG icon for a social network.
+ *
+ * @param string $network Network key.
+ * @return string
+ */
+function caverna_social_icon( $network ) {
+	$icons = array(
+		'instagram' => '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3.5" y="3.5" width="17" height="17" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.2" cy="6.8" r="0.9"></circle></svg>',
+		'facebook'  => '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M14 8h3V4h-3c-3.1 0-5 1.9-5 5v3H6v4h3v4h4v-4h3.2l.8-4h-4V9c0-.7.3-1 1-1Z"></path></svg>',
+		'youtube'   => '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M21 8.2a3 3 0 0 0-2.1-2.1C17 5.6 12 5.6 12 5.6s-5 0-6.9.5A3 3 0 0 0 3 8.2 31 31 0 0 0 2.5 12c0 1.3.1 2.6.5 3.8a3 3 0 0 0 2.1 2.1c1.9.5 6.9.5 6.9.5s5 0 6.9-.5a3 3 0 0 0 2.1-2.1c.4-1.2.5-2.5.5-3.8s-.1-2.6-.5-3.8Z"></path><path d="m10 15 5.2-3L10 9v6Z"></path></svg>',
+		'tiktok'    => '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M14 3c.4 3 2.1 4.8 5 5.1v3.4a8 8 0 0 1-5-1.6v5.8a5.3 5.3 0 1 1-5.3-5.3c.4 0 .8 0 1.2.1v3.7a2 2 0 0 0-1.2-.4 1.9 1.9 0 1 0 1.9 1.9V3H14Z"></path></svg>',
+		'x'         => '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 4l16 16"></path><path d="M20 4L4 20"></path></svg>',
+		'spotify'   => '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="8"></circle><path d="M8.4 10.1c2.5-.7 5.2-.5 7.3.7"></path><path d="M8.9 13c1.9-.5 4-.4 5.8.6"></path><path d="M9.5 15.6c1.3-.3 2.7-.2 4 .5"></path></svg>',
+	);
+
+	return isset( $icons[ $network ] ) ? $icons[ $network ] : '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="8"></circle></svg>';
 }
 
 /**

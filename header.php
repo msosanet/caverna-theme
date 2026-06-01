@@ -60,6 +60,7 @@
 				);
 				?>
 			</nav><!-- #site-navigation -->
+			<?php caverna_social_links_markup( 'header-social-links' ); ?>
 		</div>
 
 		<?php
