@@ -655,6 +655,8 @@ add_action( 'admin_notices', 'caverna_newsletter_admin_export_link' );
  * @return void
  */
 function caverna_render_popular_posts_block( $exclude_ids = array() ) {
+	global $post;
+
 	$query_args = array(
 		'post_type'           => 'post',
 		'posts_per_page'      => 4,
@@ -665,30 +667,35 @@ function caverna_render_popular_posts_block( $exclude_ids = array() ) {
 	);
 
 	$popular_query = new WP_Query( $query_args );
+	$popular_posts = $popular_query->posts;
 
-	if ( ! $popular_query->have_posts() && ! empty( $query_args['post__not_in'] ) ) {
-		unset( $query_args['post__not_in'] );
-		$popular_query = new WP_Query( $query_args );
+	if ( count( $popular_posts ) < 4 && ! empty( $query_args['post__not_in'] ) ) {
+		$fallback_args                   = $query_args;
+		$fallback_args['posts_per_page'] = 4 - count( $popular_posts );
+		$fallback_args['post__not_in']   = wp_list_pluck( $popular_posts, 'ID' );
+		$fallback_query                  = new WP_Query( $fallback_args );
+		$popular_posts                   = array_merge( $popular_posts, $fallback_query->posts );
 	}
 
-	if ( ! $popular_query->have_posts() ) {
+	if ( ! $popular_posts ) {
 		return;
 	}
 	?>
-	<section class="popular-inline home-section--popular">
+	<section class="popular-inline home-section--popular" aria-labelledby="popular-inline-title">
 		<div class="home-section__header">
 			<div>
 				<p class="advertising-kicker"><?php esc_html_e( 'Lecturas recomendadas', 'caverna' ); ?></p>
-				<h2 class="section-title"><?php esc_html_e( 'Mas leidas y comentadas', 'caverna' ); ?></h2>
+				<h2 id="popular-inline-title" class="section-title"><?php esc_html_e( 'Mas leidas y comentadas', 'caverna' ); ?></h2>
+				<p class="popular-inline__intro"><?php esc_html_e( 'Cuatro notas para seguir el pulso de la comunidad despues del newsletter.', 'caverna' ); ?></p>
 			</div>
 			<a class="read-more-link" href="<?php echo esc_url( get_permalink( get_option( 'page_for_posts' ) ) ? get_permalink( get_option( 'page_for_posts' ) ) : home_url( '/' ) ); ?>"><?php esc_html_e( 'Ver archivo', 'caverna' ); ?></a>
 		</div>
-		<div class="secondary-grid secondary-grid--compact">
+		<div class="secondary-grid popular-inline__grid">
 			<?php
-			while ( $popular_query->have_posts() ) :
-				$popular_query->the_post();
+			foreach ( array_slice( $popular_posts, 0, 4 ) as $post ) :
+				setup_postdata( $post );
 				get_template_part( 'template-parts/content', 'secondary' );
-			endwhile;
+			endforeach;
 			wp_reset_postdata();
 			?>
 		</div>
@@ -807,6 +814,22 @@ function caverna_card_meta() {
 			<a class="card-meta__category" href="<?php echo esc_url( get_category_link( $categories[0] ) ); ?>"><?php echo esc_html( $categories[0]->name ); ?></a>
 		<?php endif; ?>
 		<?php caverna_reading_time_markup(); ?>
+		<?php
+		$comment_count = get_comments_number();
+		if ( $comment_count > 0 ) :
+			?>
+			<span class="card-meta__comments">
+				<?php
+				echo esc_html(
+					sprintf(
+						/* translators: %d: comment count. */
+						_n( '%d comentario', '%d comentarios', $comment_count, 'caverna' ),
+						$comment_count
+					)
+				);
+				?>
+			</span>
+		<?php endif; ?>
 	</div>
 	<?php
 }
