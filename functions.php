@@ -903,7 +903,7 @@ function caverna_advertising_whatsapp_number() {
  * @return string
  */
 function caverna_advertising_whatsapp_message() {
-	return get_theme_mod( 'caverna_ad_whatsapp_message', 'Vengo de cavernaradio.net y quiero saber mas sobre como publicitar.' );
+	return get_theme_mod( 'caverna_ad_whatsapp_message', 'Hola, quiero recibir informacion sobre los planes publicitarios de Caverna Radio y Surco.ar.' );
 }
 
 /**
@@ -921,6 +921,21 @@ function caverna_advertising_whatsapp_url() {
 
 	return 'https://wa.me/' . rawurlencode( $number ) . '?text=' . rawurlencode( $message );
 }
+
+/**
+ * Customize selected document titles.
+ *
+ * @param string $title Document title.
+ * @return string
+ */
+function caverna_document_title( $title ) {
+	if ( is_page( 'publicite-con-nosotros' ) ) {
+		return __( 'Publicita en Caverna Radio | Publicidad digital en Ushuaia', 'caverna' );
+	}
+
+	return $title;
+}
+add_filter( 'pre_get_document_title', 'caverna_document_title' );
 
 /**
  * Get configured social media links.
@@ -1085,6 +1100,9 @@ function caverna_seo_meta() {
 						'@id'   => $url,
 					),
 				);
+			} elseif ( is_page( 'publicite-con-nosotros' ) ) {
+				$title       = __( 'Publicita en Caverna Radio | Publicidad digital en Ushuaia', 'caverna' );
+				$description = __( 'Suma tu comercio, emprendimiento o marca a Caverna Radio. Publicidad digital local en Ushuaia con radio online, sitio web, redes sociales y servicios de Surco.ar.', 'caverna' );
 			}
 		}
 	} elseif ( is_archive() ) {

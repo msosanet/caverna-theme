@@ -97,7 +97,7 @@ function caverna_customize_register( $wp_customize ) {
 		'caverna_ad_whatsapp_message',
 		array(
 			'sanitize_callback' => 'sanitize_textarea_field',
-			'default'           => 'Vengo de cavernaradio.net y quiero saber mas sobre como publicitar.',
+			'default'           => 'Hola, quiero recibir informacion sobre los planes publicitarios de Caverna Radio y Surco.ar.',
 		)
 	);
 	$wp_customize->add_control(

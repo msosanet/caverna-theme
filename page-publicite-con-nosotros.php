@@ -10,11 +10,80 @@ get_header();
 $contact_name = caverna_advertising_contact_name();
 $contact_href = caverna_advertising_whatsapp_url();
 $whatsapp     = caverna_advertising_whatsapp_number();
-$format_rows  = array(
-	array( __( 'Spot en radio online', 'caverna' ), __( 'Audio mensual', 'caverna' ), __( 'Recordacion de marca y promociones simples.', 'caverna' ) ),
-	array( __( 'Banner web horizontal', 'caverna' ), __( 'Portada y notas', 'caverna' ), __( 'Visibilidad continua mientras la audiencia lee.', 'caverna' ) ),
-	array( __( 'Banner lateral', 'caverna' ), __( 'Desktop y secciones', 'caverna' ), __( 'Presencia sostenida para comercios y eventos.', 'caverna' ) ),
-	array( __( 'Combo web + radio + redes', 'caverna' ), __( 'Mensualidad integrada', 'caverna' ), __( 'Campanas locales con mas puntos de contacto.', 'caverna' ) ),
+$plans        = array(
+	array(
+		'name'        => __( 'Plan Presencia Local', 'caverna' ),
+		'price'       => __( '$65.000 / mes', 'caverna' ),
+		'description' => __( 'Ideal para negocios que quieren comenzar a tener visibilidad en Caverna.', 'caverna' ),
+		'button'      => __( 'Quiero este plan', 'caverna' ),
+		'features'    => array(
+			__( 'Presencia mensual como comercio anunciante.', 'caverna' ),
+			__( 'Menciones en Caverna Radio.', 'caverna' ),
+			__( 'Presencia en el sitio web.', 'caverna' ),
+			__( 'Difusion en redes sociales.', 'caverna' ),
+			__( 'Comunicacion de promociones, novedades o eventos.', 'caverna' ),
+			__( 'Inclusion en acciones de comercios amigos.', 'caverna' ),
+		),
+	),
+	array(
+		'name'        => __( 'Plan Impulso Digital', 'caverna' ),
+		'price'       => __( '$95.000 / mes', 'caverna' ),
+		'description' => __( 'Ideal para negocios que necesitan mas presencia y comunicacion durante el mes.', 'caverna' ),
+		'button'      => __( 'Consultar por este plan', 'caverna' ),
+		'badge'       => __( 'Recomendado', 'caverna' ),
+		'features'    => array(
+			__( 'Todo lo del Plan Presencia Local.', 'caverna' ),
+			__( 'Mayor frecuencia de menciones.', 'caverna' ),
+			__( 'Publicacion dedicada en redes.', 'caverna' ),
+			__( 'Pieza grafica simple.', 'caverna' ),
+			__( 'Difusion de una promo, evento, producto o servicio.', 'caverna' ),
+			__( 'Presencia destacada en el sitio.', 'caverna' ),
+			__( 'Acompanamiento basico para mejorar el mensaje comercial.', 'caverna' ),
+		),
+	),
+	array(
+		'name'        => __( 'Plan Aliado Surco + Caverna', 'caverna' ),
+		'price'       => __( '$150.000 / mes', 'caverna' ),
+		'description' => __( 'Ideal para marcas, espacios gastronomicos, turismo, eventos y proyectos que buscan una presencia mas completa.', 'caverna' ),
+		'button'      => __( 'Quiero ser aliado', 'caverna' ),
+		'features'    => array(
+			__( 'Todo lo del Plan Impulso Digital.', 'caverna' ),
+			__( 'Nota breve o contenido patrocinado en cavernaradio.net.', 'caverna' ),
+			__( 'Entrevista, mencion editorial o cobertura simple.', 'caverna' ),
+			__( 'Reel o pieza audiovisual simple.', 'caverna' ),
+			__( 'Diagnostico basico de presencia digital.', 'caverna' ),
+			__( 'Propuesta de mejora para redes, web, WhatsApp o pauta.', 'caverna' ),
+			__( 'Prioridad en campanas, sorteos y acciones especiales.', 'caverna' ),
+		),
+	),
+);
+$audiences    = array(
+	__( 'Bares y cervecerias', 'caverna' ),
+	__( 'Restaurantes y cafeterias', 'caverna' ),
+	__( 'Comercios locales', 'caverna' ),
+	__( 'Turismo y alojamientos', 'caverna' ),
+	__( 'Eventos culturales', 'caverna' ),
+	__( 'Artistas y productores', 'caverna' ),
+	__( 'Barberias, tattoo y estetica', 'caverna' ),
+	__( 'Indumentaria y emprendimientos', 'caverna' ),
+);
+$surco_services = array(
+	__( 'Diseno y desarrollo web', 'caverna' ),
+	__( 'Landing pages', 'caverna' ),
+	__( 'Carta digital o menu QR', 'caverna' ),
+	__( 'Gestion de redes sociales', 'caverna' ),
+	__( 'Campanas publicitarias', 'caverna' ),
+	__( 'Automatizacion de WhatsApp', 'caverna' ),
+	__( 'Produccion de contenido', 'caverna' ),
+	__( 'Identidad visual y comunicacion comercial', 'caverna' ),
+);
+$benefits     = array(
+	__( 'Llegas a una audiencia local de Ushuaia.', 'caverna' ),
+	__( 'Tu marca aparece en un medio con identidad cultural.', 'caverna' ),
+	__( 'Podes comunicar promociones, eventos y novedades.', 'caverna' ),
+	__( 'Tenes presencia en radio online, sitio web y redes.', 'caverna' ),
+	__( 'Podes empezar con publicidad y escalar a marketing digital.', 'caverna' ),
+	__( 'Te acompanamos con contenido y estrategia.', 'caverna' ),
 );
 ?>
 
@@ -23,15 +92,19 @@ $format_rows  = array(
 
 		<section class="advertising-hero content-layout content-layout--narrow">
 			<div class="advertising-hero__content">
-				<p class="advertising-kicker"><?php esc_html_e( 'Publicidad en Caverna Radio', 'caverna' ); ?></p>
-				<h1><?php esc_html_e( 'Inverti donde tu marca se pueda ver, escuchar y recordar.', 'caverna' ); ?></h1>
-				<p><?php esc_html_e( 'La publicidad digital permite estar presente cuando la audiencia busca, lee, comparte y vuelve al contenido. En Caverna Radio combinamos presencia web, identidad local y comunicacion directa para que tu inversion tenga mas recorrido.', 'caverna' ); ?></p>
-				<a class="advertising-button" href="<?php echo esc_url( $contact_href ); ?>" target="_blank" rel="noopener"><?php esc_html_e( 'Consultar por WhatsApp', 'caverna' ); ?></a>
+				<p class="advertising-kicker"><?php esc_html_e( 'Publicidad digital local', 'caverna' ); ?></p>
+				<h1><?php esc_html_e( 'Publicita en Caverna Radio', 'caverna' ); ?></h1>
+				<p class="advertising-hero__lead"><?php esc_html_e( 'Un medio digital local de Ushuaia impulsado por Surco.ar', 'caverna' ); ?></p>
+				<p><?php esc_html_e( 'Caverna Radio conecta comercios, emprendimientos, eventos y marcas locales con una audiencia activa mediante radio online, sitio web, redes sociales y contenido digital.', 'caverna' ); ?></p>
+				<div class="advertising-actions">
+					<a class="advertising-button" href="<?php echo esc_url( $contact_href ); ?>" target="_blank" rel="noopener"><?php esc_html_e( 'Solicitar propuesta por WhatsApp', 'caverna' ); ?></a>
+					<a class="advertising-button advertising-button--secondary" href="#planes-publicitarios"><?php esc_html_e( 'Ver planes publicitarios', 'caverna' ); ?></a>
+				</div>
 				<p class="advertising-contact">
 					<?php
 					printf(
 						/* translators: 1: contact name, 2: WhatsApp number. */
-						esc_html__( 'Contacto: %1$s · WhatsApp %2$s', 'caverna' ),
+						esc_html__( 'Contacto: %1$s - WhatsApp %2$s', 'caverna' ),
 						esc_html( $contact_name ),
 						esc_html( $whatsapp )
 					);
@@ -40,167 +113,106 @@ $format_rows  = array(
 			</div>
 		</section>
 
-		<section class="advertising-benefits content-layout content-layout--narrow">
+		<section class="advertising-positioning content-layout content-layout--narrow">
 			<div class="advertising-copy">
-				<p class="advertising-kicker"><?php esc_html_e( 'Digital vs. medios tradicionales', 'caverna' ); ?></p>
-				<h2><?php esc_html_e( 'Mas presencia por cada peso invertido.', 'caverna' ); ?></h2>
-				<p><?php esc_html_e( 'La publicidad tradicional puede ser util para instalar una marca, pero suele depender de horarios fijos, piezas que pasan una sola vez y poca capacidad de ajuste. En digital, tu anuncio permanece visible, puede compartirse, se adapta a distintos dispositivos y permite construir una presencia continua sin depender de una tanda puntual.', 'caverna' ); ?></p>
+				<p class="advertising-kicker"><?php esc_html_e( 'Caverna + Surco.ar', 'caverna' ); ?></p>
+				<h2><?php esc_html_e( 'Una plataforma local para ganar visibilidad.', 'caverna' ); ?></h2>
 			</div>
-			<div class="advertising-benefits__grid">
+			<div class="advertising-positioning__grid">
 				<article>
-					<h3><?php esc_html_e( 'Presencia continua', 'caverna' ); ?></h3>
-					<p><?php esc_html_e( 'Tu marca no aparece solo durante unos segundos: queda visible en el sitio mientras la audiencia navega el contenido.', 'caverna' ); ?></p>
+					<h3><?php esc_html_e( 'Medio independiente', 'caverna' ); ?></h3>
+					<p><?php esc_html_e( 'Caverna Radio es un medio digital independiente de Ushuaia enfocado en cultura, comunidad, agenda local, musica, podcasts y contenidos alternativos.', 'caverna' ); ?></p>
 				</article>
 				<article>
-					<h3><?php esc_html_e( 'Mejor contexto', 'caverna' ); ?></h3>
-					<p><?php esc_html_e( 'El anuncio convive con notas, radio, cultura y comunidad, en un entorno donde la audiencia ya esta prestando atencion.', 'caverna' ); ?></p>
-				</article>
-				<article>
-					<h3><?php esc_html_e( 'Flexibilidad', 'caverna' ); ?></h3>
-					<p><?php esc_html_e( 'Podemos cambiar piezas, ajustar mensajes y combinar formatos sin rehacer una campana completa.', 'caverna' ); ?></p>
-				</article>
-				<article>
-					<h3><?php esc_html_e( 'Accion directa', 'caverna' ); ?></h3>
-					<p><?php esc_html_e( 'El usuario puede pasar del anuncio al contacto, consulta, sitio o red social de tu marca en un solo paso.', 'caverna' ); ?></p>
+					<h3><?php esc_html_e( 'Impulso digital', 'caverna' ); ?></h3>
+					<p><?php esc_html_e( 'Desde Surco.ar, agencia de marketing digital y desarrollo web, impulsamos Caverna como una plataforma de comunicacion para que negocios locales ganen visibilidad y puedan escalar su presencia digital.', 'caverna' ); ?></p>
 				</article>
 			</div>
+			<a class="read-more-link" href="#planes-publicitarios"><?php esc_html_e( 'Conocer planes', 'caverna' ); ?></a>
 		</section>
 
-		<section class="advertising-metrics content-layout content-layout--narrow" aria-label="<?php esc_attr_e( 'Indicadores comerciales', 'caverna' ); ?>">
-			<article>
-				<strong><?php esc_html_e( 'Ushuaia', 'caverna' ); ?></strong>
-				<span><?php esc_html_e( 'Identidad local y cercania con marcas de la ciudad.', 'caverna' ); ?></span>
-			</article>
-			<article>
-				<strong><?php esc_html_e( 'Web + radio + redes', 'caverna' ); ?></strong>
-				<span><?php esc_html_e( 'Presencia combinada para no depender de un solo canal.', 'caverna' ); ?></span>
-			</article>
-			<article>
-				<strong><?php esc_html_e( 'Mensual', 'caverna' ); ?></strong>
-				<span><?php esc_html_e( 'Pauta simple de activar, revisar y renovar.', 'caverna' ); ?></span>
-			</article>
-		</section>
-
-		<section class="advertising-preview content-layout">
-			<div class="advertising-preview__main">
-				<?php echo caverna_default_ad( 'horizontal' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+		<section class="advertising-audience content-layout content-layout--narrow">
+			<div class="advertising-copy">
+				<p class="advertising-kicker"><?php esc_html_e( 'Para quien es', 'caverna' ); ?></p>
+				<h2><?php esc_html_e( 'Pensado para proyectos locales que necesitan estar presentes.', 'caverna' ); ?></h2>
 			</div>
-			<div class="advertising-preview__side">
-				<?php echo caverna_default_ad( 'vertical' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-			</div>
-		</section>
-
-		<section class="advertising-why content-layout content-layout--narrow">
-			<p class="advertising-kicker"><?php esc_html_e( 'Por que con nosotros', 'caverna' ); ?></p>
-			<h2><?php esc_html_e( 'Una alternativa local, directa y cercana en Ushuaia.', 'caverna' ); ?></h2>
-			<p><?php esc_html_e( 'A diferencia de propuestas mas impersonales o estructuras tradicionales, Caverna Radio ofrece una comunicacion cercana, flexible y pensada para marcas que quieren hablarle a una comunidad concreta. No vendemos solo un espacio: trabajamos presencia, contexto y acompanamiento para que tu mensaje tenga sentido dentro de nuestra audiencia.', 'caverna' ); ?></p>
-			<div class="advertising-why__list">
-				<span><?php esc_html_e( 'Identidad local', 'caverna' ); ?></span>
-				<span><?php esc_html_e( 'Trato directo', 'caverna' ); ?></span>
-				<span><?php esc_html_e( 'Formatos simples', 'caverna' ); ?></span>
-				<span><?php esc_html_e( 'Audiencia afin', 'caverna' ); ?></span>
-			</div>
-		</section>
-
-		<section class="advertising-options content-layout content-layout--narrow">
-			<div class="advertising-options__grid">
-				<?php foreach ( caverna_advertising_packages() as $package ) : ?>
+			<div class="advertising-audience__grid">
+				<?php foreach ( $audiences as $audience ) : ?>
 					<article>
-						<h2><?php echo esc_html( $package['title'] ); ?></h2>
-						<p><?php echo esc_html( $package['text'] ); ?></p>
+						<span aria-hidden="true">+</span>
+						<h3><?php echo esc_html( $audience ); ?></h3>
 					</article>
 				<?php endforeach; ?>
 			</div>
 		</section>
 
-		<section class="advertising-comparison content-layout content-layout--narrow">
+		<section id="planes-publicitarios" class="advertising-pricing content-layout content-layout--narrow">
 			<div class="advertising-copy">
-				<p class="advertising-kicker"><?php esc_html_e( 'Formatos disponibles', 'caverna' ); ?></p>
-				<h2><?php esc_html_e( 'Comparativa rapida para elegir donde empezar.', 'caverna' ); ?></h2>
-			</div>
-			<div class="advertising-table" role="table" aria-label="<?php esc_attr_e( 'Comparativa de formatos publicitarios', 'caverna' ); ?>">
-				<div role="row">
-					<strong role="columnheader"><?php esc_html_e( 'Formato', 'caverna' ); ?></strong>
-					<strong role="columnheader"><?php esc_html_e( 'Ubicacion', 'caverna' ); ?></strong>
-					<strong role="columnheader"><?php esc_html_e( 'Objetivo', 'caverna' ); ?></strong>
-				</div>
-				<?php foreach ( $format_rows as $row ) : ?>
-					<div role="row">
-						<span role="cell"><?php echo esc_html( $row[0] ); ?></span>
-						<span role="cell"><?php echo esc_html( $row[1] ); ?></span>
-						<span role="cell"><?php echo esc_html( $row[2] ); ?></span>
-					</div>
-				<?php endforeach; ?>
-			</div>
-		</section>
-
-		<section class="advertising-pricing content-layout content-layout--narrow">
-			<div class="advertising-copy">
-				<p class="advertising-kicker"><?php esc_html_e( 'Precios de lanzamiento', 'caverna' ); ?></p>
-				<h2><?php esc_html_e( 'Mensualidades simples, directas y con beneficio para la comunidad.', 'caverna' ); ?></h2>
-				<p><?php esc_html_e( 'Los valores son mensuales. Nos interesa que las marcas se vean, pero tambien que nuestros oyentes y seguidores reciban algo a cambio en redes sociales: un sorteo, descuento, promo, beneficio o regalo que conecte tu marca con la comunidad de Caverna.', 'caverna' ); ?></p>
+				<p class="advertising-kicker"><?php esc_html_e( 'Planes publicitarios', 'caverna' ); ?></p>
+				<h2><?php esc_html_e( 'Presencia mensual clara, accesible y escalable.', 'caverna' ); ?></h2>
+				<p><?php esc_html_e( 'Elegimos planes simples para que cada comercio pueda empezar con una base concreta y crecer hacia una comunicacion digital mas completa.', 'caverna' ); ?></p>
 			</div>
 			<div class="advertising-pricing__grid">
-				<article class="pricing-card">
-					<p class="pricing-card__eyebrow"><?php esc_html_e( 'Spot publicitario', 'caverna' ); ?></p>
-					<h3><?php esc_html_e( '$50.000 ARS', 'caverna' ); ?></h3>
-					<p><?php esc_html_e( 'Mensualidad para un spot publicitario en radio online o presencia en nuestro sitio, segun el objetivo de la campana.', 'caverna' ); ?></p>
-					<ul>
-						<li><?php esc_html_e( 'Vigencia mensual desde la activacion.', 'caverna' ); ?></li>
-						<li><?php esc_html_e( 'Formato simple para arrancar rapido.', 'caverna' ); ?></li>
-						<li><?php esc_html_e( 'Puede aplicarse en radio online o web.', 'caverna' ); ?></li>
-						<li><?php esc_html_e( 'Incluye propuesta de regalo o beneficio para seguidores en nuestras redes sociales.', 'caverna' ); ?></li>
-					</ul>
-					<a class="read-more-link pricing-card__button" href="<?php echo esc_url( $contact_href ); ?>" target="_blank" rel="noopener"><?php esc_html_e( 'Consultar spot', 'caverna' ); ?></a>
-				</article>
-				<article class="pricing-card pricing-card--featured">
-					<p class="pricing-card__eyebrow"><?php esc_html_e( 'Combo recomendado', 'caverna' ); ?></p>
-					<h3><?php esc_html_e( '$65.000 ARS', 'caverna' ); ?></h3>
-					<p><?php esc_html_e( 'Mensualidad con presencia combinada en radio online, pagina web y redes sociales para reforzar el mensaje en distintos puntos de contacto.', 'caverna' ); ?></p>
-					<ul>
-						<li><?php esc_html_e( 'Vigencia mensual desde la activacion.', 'caverna' ); ?></li>
-						<li><?php esc_html_e( 'Radio online + sitio web + redes sociales.', 'caverna' ); ?></li>
-						<li><?php esc_html_e( 'Ideal para comercios, eventos, marcas locales y emprendimientos.', 'caverna' ); ?></li>
-						<li><?php esc_html_e( 'Incluye regalo, sorteo, promo o beneficio para que nuestros seguidores tambien ganen.', 'caverna' ); ?></li>
-					</ul>
-					<a class="advertising-button pricing-card__button" href="<?php echo esc_url( $contact_href ); ?>" target="_blank" rel="noopener"><?php esc_html_e( 'Consultar este combo', 'caverna' ); ?></a>
-				</article>
+				<?php foreach ( $plans as $plan ) : ?>
+					<article class="pricing-card<?php echo ! empty( $plan['badge'] ) ? ' pricing-card--featured' : ''; ?>">
+						<?php if ( ! empty( $plan['badge'] ) ) : ?>
+							<p class="pricing-card__badge"><?php echo esc_html( $plan['badge'] ); ?></p>
+						<?php endif; ?>
+						<p class="pricing-card__eyebrow"><?php echo esc_html( $plan['name'] ); ?></p>
+						<h3><?php echo esc_html( $plan['price'] ); ?></h3>
+						<p><?php echo esc_html( $plan['description'] ); ?></p>
+						<ul>
+							<?php foreach ( $plan['features'] as $feature ) : ?>
+								<li><?php echo esc_html( $feature ); ?></li>
+							<?php endforeach; ?>
+						</ul>
+						<a class="advertising-button pricing-card__button" href="<?php echo esc_url( $contact_href ); ?>" target="_blank" rel="noopener"><?php echo esc_html( $plan['button'] ); ?></a>
+					</article>
+				<?php endforeach; ?>
 			</div>
 			<div class="advertising-pricing__note">
-				<p><?php esc_html_e( 'Valores expresados en pesos argentinos. Precios sujetos a actualizacion. La publicacion se coordina luego de recibir el material o acordar la pieza con el anunciante.', 'caverna' ); ?></p>
-				<a class="advertising-button" href="<?php echo esc_url( $contact_href ); ?>" target="_blank" rel="noopener"><?php esc_html_e( 'Quiero publicitar este mes', 'caverna' ); ?></a>
+				<p><?php esc_html_e( 'Valores mensuales expresados en pesos argentinos. Los planes pueden adaptarse segun rubro, calendario, materiales disponibles y objetivo comercial.', 'caverna' ); ?></p>
+				<a class="advertising-button" href="<?php echo esc_url( $contact_href ); ?>" target="_blank" rel="noopener"><?php esc_html_e( 'Solicitar propuesta', 'caverna' ); ?></a>
 			</div>
 		</section>
 
-		<section class="advertising-faq content-layout content-layout--narrow">
+		<section class="advertising-surco content-layout content-layout--narrow">
 			<div class="advertising-copy">
-				<p class="advertising-kicker"><?php esc_html_e( 'Preguntas frecuentes', 'caverna' ); ?></p>
-				<h2><?php esc_html_e( 'Como funciona la pauta.', 'caverna' ); ?></h2>
+				<p class="advertising-kicker"><?php esc_html_e( 'Servicios Surco.ar', 'caverna' ); ?></p>
+				<h2><?php esc_html_e( 'Tambien podemos ayudarte a escalar tu presencia digital.', 'caverna' ); ?></h2>
+				<p><?php esc_html_e( 'Ademas de la publicidad mensual en Caverna Radio, desde Surco.ar podemos acompanar a comercios y emprendimientos con soluciones digitales.', 'caverna' ); ?></p>
 			</div>
-			<div class="advertising-faq__grid">
-				<article>
-					<h3><?php esc_html_e( 'Que tengo que enviar?', 'caverna' ); ?></h3>
-					<p><?php esc_html_e( 'Podes enviar logo, pieza grafica, texto, link, promo o datos principales de la campana. Si no tenes todo armado, lo coordinamos por WhatsApp.', 'caverna' ); ?></p>
-				</article>
-				<article>
-					<h3><?php esc_html_e( 'Cuando se activa?', 'caverna' ); ?></h3>
-					<p><?php esc_html_e( 'La pauta se activa cuando queda confirmado el material y acordada la fecha de inicio mensual.', 'caverna' ); ?></p>
-				</article>
-				<article>
-					<h3><?php esc_html_e( 'Como funciona el regalo?', 'caverna' ); ?></h3>
-					<p><?php esc_html_e( 'La marca propone un regalo, sorteo, descuento o beneficio. Nosotros lo comunicamos en redes para que nuestros seguidores tambien reciban valor.', 'caverna' ); ?></p>
-				</article>
-				<article>
-					<h3><?php esc_html_e( 'Puedo cambiar la pieza?', 'caverna' ); ?></h3>
-					<p><?php esc_html_e( 'Si la campana lo necesita, podemos ajustar textos o piezas durante el mes para mantener la comunicacion actualizada.', 'caverna' ); ?></p>
-				</article>
+			<div class="advertising-surco__grid">
+				<?php foreach ( $surco_services as $service ) : ?>
+					<span><?php echo esc_html( $service ); ?></span>
+				<?php endforeach; ?>
 			</div>
+			<a class="advertising-button" href="<?php echo esc_url( $contact_href ); ?>" target="_blank" rel="noopener"><?php esc_html_e( 'Consultar servicios digitales', 'caverna' ); ?></a>
 		</section>
 
-		<section class="advertising-cta content-layout content-layout--narrow">
-			<h2><?php esc_html_e( 'Ideal para comercios, eventos, marcas locales y emprendimientos.', 'caverna' ); ?></h2>
-			<p><?php esc_html_e( 'Contanos que queres promocionar y te respondemos con una propuesta simple para web, radio online o un combo a medida.', 'caverna' ); ?></p>
-			<a class="advertising-button" href="<?php echo esc_url( $contact_href ); ?>" target="_blank" rel="noopener"><?php esc_html_e( 'Hablar con publicidad', 'caverna' ); ?></a>
+		<section class="advertising-benefits content-layout content-layout--narrow">
+			<div class="advertising-copy">
+				<p class="advertising-kicker"><?php esc_html_e( 'Beneficios', 'caverna' ); ?></p>
+				<h2><?php esc_html_e( 'Publicidad local con contenido, contexto y acompanamiento.', 'caverna' ); ?></h2>
+			</div>
+			<div class="advertising-benefits__grid">
+				<?php foreach ( $benefits as $benefit ) : ?>
+					<article>
+						<h3><?php echo esc_html( $benefit ); ?></h3>
+					</article>
+				<?php endforeach; ?>
+			</div>
+			<a class="read-more-link" href="#contacto-publicidad"><?php esc_html_e( 'Hablar con Caverna', 'caverna' ); ?></a>
+		</section>
+
+		<section id="contacto-publicidad" class="advertising-cta content-layout content-layout--narrow">
+			<p class="advertising-kicker"><?php esc_html_e( 'Contacto', 'caverna' ); ?></p>
+			<h2><?php esc_html_e( 'Suma tu comercio a Caverna', 'caverna' ); ?></h2>
+			<p><?php esc_html_e( 'Si tenes un comercio, emprendimiento, evento o marca local, podemos ayudarte a ganar visibilidad con una propuesta mensual accesible y adaptada a tu negocio.', 'caverna' ); ?></p>
+			<div class="advertising-actions">
+				<a class="advertising-button" href="<?php echo esc_url( $contact_href ); ?>" target="_blank" rel="noopener"><?php esc_html_e( 'Escribir por WhatsApp', 'caverna' ); ?></a>
+				<a class="advertising-button advertising-button--secondary" href="<?php echo esc_url( caverna_page_url( 'contacto' ) ); ?>"><?php esc_html_e( 'Enviar consulta', 'caverna' ); ?></a>
+			</div>
 		</section>
 	</main>
 
