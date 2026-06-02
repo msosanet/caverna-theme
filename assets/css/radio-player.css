@@ -122,6 +122,35 @@
 	transform: scale(1.05);
 }
 
+.caverna-radio-player__volume {
+	display: grid;
+	grid-template-columns: auto minmax(120px, 1fr) auto;
+	gap: 0.6rem;
+	align-items: center;
+	max-width: 320px;
+	color: rgba(255, 255, 255, 0.82);
+	font-size: 0.85rem;
+	font-weight: 800;
+	text-transform: uppercase;
+}
+
+.caverna-radio-player__volume-range {
+	width: 100%;
+	accent-color: #e53935;
+	cursor: pointer;
+}
+
+.caverna-radio-player__volume-range:focus-visible {
+	outline: 3px solid #ffe600;
+	outline-offset: 4px;
+}
+
+.caverna-radio-player__volume-value {
+	min-width: 3ch;
+	color: #ffe600;
+	text-align: right;
+}
+
 .caverna-radio-player__icon {
 	display: block;
 	width: 0;
@@ -192,7 +221,7 @@
 	}
 
 	.caverna-radio-player__content {
-		grid-template-columns: minmax(0, 1fr) auto;
+		grid-template-columns: minmax(0, 1fr) auto minmax(160px, 220px);
 		gap: 1.5rem;
 	}
 
