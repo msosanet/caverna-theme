@@ -64,14 +64,19 @@
 		</div>
 
 		<?php
-		$header_ad_code = get_theme_mod( 'caverna_header_ad_code', '' );
-		$header_ad_own  = get_theme_mod( 'caverna_header_ad_own', '' );
-		$header_ad      = caverna_pick_ad( $header_ad_code, $header_ad_own );
-		if ( empty( $header_ad ) ) {
-			$header_ad = caverna_default_ad( 'horizontal' );
+		$show_header_ad = ! is_front_page() && ! is_home();
+		$header_ad      = '';
+
+		if ( $show_header_ad ) {
+			$header_ad_code = get_theme_mod( 'caverna_header_ad_code', '' );
+			$header_ad_own  = get_theme_mod( 'caverna_header_ad_own', '' );
+			$header_ad      = caverna_pick_ad( $header_ad_code, $header_ad_own );
+			if ( empty( $header_ad ) ) {
+				$header_ad = caverna_default_ad( 'horizontal' );
+			}
 		}
 
-		if ( ! empty( $header_ad ) || get_header_image() || is_customize_preview() ) :
+		if ( ( $show_header_ad && ( ! empty( $header_ad ) || is_customize_preview() ) ) || get_header_image() ) :
 			?>
 			<div class="header-ad">
 				<?php if ( get_header_image() ) : ?>
@@ -84,7 +89,7 @@
 					<div class="ad-banner ad-banner--leaderboard">
 						<?php echo $header_ad; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 					</div>
-				<?php elseif ( is_customize_preview() ) : ?>
+				<?php elseif ( $show_header_ad && is_customize_preview() ) : ?>
 					<div class="ad-placeholder ad-placeholder--leaderboard">
 						Espacio publicidad (728x90)
 					</div>

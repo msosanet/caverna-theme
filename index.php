@@ -18,6 +18,8 @@ get_header();
 	<main id="primary" class="site-main">
 
 		<?php
+		caverna_radio_player( array( 'class_name' => 'caverna-radio-player--home' ) );
+
 		$principal_term = get_category_by_slug( 'principal' );
 		if ( ! $principal_term ) {
 			$principal_term = get_term_by( 'name', 'Principal', 'category' );
@@ -98,16 +100,6 @@ get_header();
 
 		wp_reset_postdata();
 
-		caverna_radio_player( array( 'class_name' => 'caverna-radio-player--home' ) );
-
-		if ( is_active_sidebar( 'ad-home-top' ) ) :
-			?>
-			<section class="home-ad content-layout">
-				<?php dynamic_sidebar( 'ad-home-top' ); ?>
-			</section>
-			<?php
-		endif;
-
 		$paged = max( 1, (int) get_query_var( 'paged' ) );
 		$latest_query = new WP_Query(
 			array(
@@ -122,28 +114,6 @@ get_header();
 
 		<div class="content-layout content-layout--split">
 			<section class="home-latest">
-				<?php
-				$leaderboard_ad     = get_theme_mod( 'caverna_home_leaderboard_ad', '' );
-				$leaderboard_ad_own = get_theme_mod( 'caverna_home_leaderboard_ad_own', '' );
-				$leaderboard_pick   = caverna_pick_ad( $leaderboard_ad, $leaderboard_ad_own );
-				if ( empty( $leaderboard_pick ) ) {
-					$leaderboard_pick = caverna_default_ad( 'horizontal' );
-				}
-				if ( ! empty( $leaderboard_pick ) ) :
-					?>
-					<div class="ad-banner ad-banner--leaderboard">
-						<?php echo $leaderboard_pick; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-					</div>
-					<?php
-				elseif ( is_customize_preview() ) :
-					?>
-					<div class="ad-placeholder ad-placeholder--leaderboard" aria-hidden="true">
-						Espacio publicidad (728x90)
-					</div>
-					<?php
-				endif;
-				?>
-
 				<h2 class="section-title"><?php esc_html_e( 'Ultimas entradas', 'caverna' ); ?></h2>
 				<div class="latest-list">
 					<?php
