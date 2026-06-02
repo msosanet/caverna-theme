@@ -182,13 +182,30 @@ function caverna_scripts() {
 	wp_enqueue_style( 'caverna-style', get_stylesheet_uri(), array(), _S_VERSION );
 	wp_style_add_data( 'caverna-style', 'rtl', 'replace' );
 
+	if ( caverna_should_enqueue_radio_player() ) {
+		wp_enqueue_style( 'caverna-radio-player', get_template_directory_uri() . '/assets/css/radio-player.css', array( 'caverna-style' ), _S_VERSION );
+	}
+
 	wp_enqueue_script( 'caverna-navigation', get_template_directory_uri() . '/js/navigation.js', array(), _S_VERSION, true );
+
+	if ( caverna_should_enqueue_radio_player() ) {
+		wp_enqueue_script( 'caverna-radio-player', get_template_directory_uri() . '/assets/js/radio-player.js', array(), _S_VERSION, true );
+	}
 
 	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
 		wp_enqueue_script( 'comment-reply' );
 	}
 }
 add_action( 'wp_enqueue_scripts', 'caverna_scripts' );
+
+/**
+ * Determine whether the radio player assets are needed.
+ *
+ * @return bool
+ */
+function caverna_should_enqueue_radio_player() {
+	return is_home() || is_front_page() || is_page( 'radio' );
+}
 
 /**
  * Remove block styles from the public site when the theme renders classic templates.
@@ -286,6 +303,34 @@ function caverna_preload_logo_asset() {
 	<?php
 }
 add_action( 'wp_head', 'caverna_preload_logo_asset', 1 );
+
+/**
+ * Render the reusable online radio player.
+ *
+ * @param array $args Player options.
+ * @return void
+ */
+function caverna_radio_player( $args = array() ) {
+	$args = wp_parse_args(
+		$args,
+		array(
+			'class_name' => '',
+		)
+	);
+
+	get_template_part( 'template-parts/radio-player', null, $args );
+}
+
+/**
+ * Return the configured online radio stream URL.
+ *
+ * @return string
+ */
+function caverna_radio_stream_url() {
+	$url = get_theme_mod( 'caverna_radio_stream_url', 'https://radio.cavernaradio.net/radio.mp3' );
+
+	return $url ? esc_url_raw( $url ) : 'https://radio.cavernaradio.net/radio.mp3';
+}
 
 /**
  * Register newsletter subscribers in the admin.
@@ -880,6 +925,55 @@ function caverna_page_url( $slug ) {
 }
 
 /**
+ * Ensure the native radio page exists so /radio can use page-radio.php.
+ *
+ * @return void
+ */
+function caverna_ensure_radio_page() {
+	$existing_page = get_page_by_path( 'radio' );
+
+	if ( $existing_page instanceof WP_Post ) {
+		if ( 'page-radio.php' !== get_page_template_slug( $existing_page ) ) {
+			update_post_meta( $existing_page->ID, '_wp_page_template', 'page-radio.php' );
+		}
+
+		return;
+	}
+
+	$page_id = wp_insert_post(
+		array(
+			'post_title'   => __( 'Radio', 'caverna' ),
+			'post_name'    => 'radio',
+			'post_type'    => 'page',
+			'post_status'  => 'publish',
+			'post_content' => '',
+		),
+		true
+	);
+
+	if ( ! is_wp_error( $page_id ) ) {
+		update_post_meta( $page_id, '_wp_page_template', 'page-radio.php' );
+		update_option( 'caverna_radio_page_created', (int) $page_id );
+	}
+}
+add_action( 'after_switch_theme', 'caverna_ensure_radio_page' );
+
+/**
+ * Create the radio page once for already-active installs after this update ships.
+ *
+ * @return void
+ */
+function caverna_maybe_create_radio_page() {
+	if ( get_option( 'caverna_radio_page_checked' ) ) {
+		return;
+	}
+
+	caverna_ensure_radio_page();
+	update_option( 'caverna_radio_page_checked', 1 );
+}
+add_action( 'admin_init', 'caverna_maybe_create_radio_page' );
+
+/**
  * Get the configured advertising contact name.
  *
  * @return string
@@ -931,6 +1025,10 @@ function caverna_advertising_whatsapp_url() {
 function caverna_document_title( $title ) {
 	if ( is_page( 'publicite-con-nosotros' ) ) {
 		return __( 'Publicita en Caverna Radio | Publicidad digital en Ushuaia', 'caverna' );
+	}
+
+	if ( is_page( 'radio' ) ) {
+		return __( 'Caverna Radio en vivo | Radio online desde Ushuaia', 'caverna' );
 	}
 
 	return $title;
@@ -1103,6 +1201,9 @@ function caverna_seo_meta() {
 			} elseif ( is_page( 'publicite-con-nosotros' ) ) {
 				$title       = __( 'Publicita en Caverna Radio | Publicidad digital en Ushuaia', 'caverna' );
 				$description = __( 'Suma tu comercio, emprendimiento o marca a Caverna Radio. Publicidad digital local en Ushuaia con radio online, sitio web, redes sociales y servicios de Surco.ar.', 'caverna' );
+			} elseif ( is_page( 'radio' ) ) {
+				$title       = __( 'Caverna Radio en vivo | Radio online desde Ushuaia', 'caverna' );
+				$description = __( 'Escucha Caverna Radio en vivo. Musica online, cultura y contenidos alternativos desde Ushuaia, con transmision digital 24/7.', 'caverna' );
 			}
 		}
 	} elseif ( is_archive() ) {
@@ -1256,7 +1357,7 @@ function caverna_clean_primary_menu_items( $items, $args ) {
 		return $items;
 	}
 
-	return array_values(
+	$items     = array_values(
 		array_filter(
 			$items,
 			function ( $item ) {
@@ -1273,6 +1374,39 @@ function caverna_clean_primary_menu_items( $items, $args ) {
 			}
 		)
 	);
+
+	$has_radio = false;
+	foreach ( $items as $item ) {
+		$path = trim( (string) wp_parse_url( $item->url, PHP_URL_PATH ), '/' );
+		if ( 'radio' === basename( $path ) ) {
+			$has_radio = true;
+			break;
+		}
+	}
+
+	if ( ! $has_radio ) {
+		$radio_item = (object) array(
+			'ID'               => 0,
+			'db_id'            => 0,
+			'menu_item_parent' => 0,
+			'object_id'        => 0,
+			'object'           => 'custom',
+			'type'             => 'custom',
+			'type_label'       => __( 'Custom Link', 'caverna' ),
+			'title'            => __( 'Radio', 'caverna' ),
+			'url'              => caverna_page_url( 'radio' ),
+			'target'           => '',
+			'attr_title'       => '',
+			'description'      => '',
+			'classes'          => array( 'menu-item', 'menu-item-radio' ),
+			'xfn'              => '',
+			'current'          => is_page( 'radio' ),
+		);
+
+		array_splice( $items, 1, 0, array( $radio_item ) );
+	}
+
+	return $items;
 }
 add_filter( 'wp_nav_menu_objects', 'caverna_clean_primary_menu_items', 10, 2 );
 
@@ -1285,6 +1419,7 @@ function caverna_primary_menu_fallback() {
 	?>
 	<ul id="primary-menu" class="menu">
 		<li><a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php esc_html_e( 'Inicio', 'caverna' ); ?></a></li>
+		<li><a href="<?php echo esc_url( caverna_page_url( 'radio' ) ); ?>"><?php esc_html_e( 'Radio', 'caverna' ); ?></a></li>
 		<li><a href="<?php echo esc_url( caverna_page_url( 'sobre-nosotros' ) ); ?>"><?php esc_html_e( 'Sobre nosotros', 'caverna' ); ?></a></li>
 		<li><a href="<?php echo esc_url( caverna_advertising_url() ); ?>"><?php esc_html_e( 'Publicite', 'caverna' ); ?></a></li>
 		<li><a href="<?php echo esc_url( caverna_page_url( 'contacto' ) ); ?>"><?php esc_html_e( 'Contacto', 'caverna' ); ?></a></li>

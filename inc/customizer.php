@@ -31,6 +31,31 @@ function caverna_customize_register( $wp_customize ) {
 		)
 	);
 
+	$wp_customize->add_section(
+		'caverna_radio',
+		array(
+			'title'    => __( 'Radio online', 'caverna' ),
+			'priority' => 136,
+		)
+	);
+
+	$wp_customize->add_setting(
+		'caverna_radio_stream_url',
+		array(
+			'sanitize_callback' => 'esc_url_raw',
+			'default'           => 'https://radio.cavernaradio.net/radio.mp3',
+		)
+	);
+	$wp_customize->add_control(
+		'caverna_radio_stream_url',
+		array(
+			'label'       => __( 'URL del stream', 'caverna' ),
+			'section'     => 'caverna_radio',
+			'type'        => 'url',
+			'description' => __( 'URL publica de Icecast/Liquidsoap para el reproductor.', 'caverna' ),
+		)
+	);
+
 	foreach (
 		array(
 			'instagram' => __( 'Instagram', 'caverna' ),

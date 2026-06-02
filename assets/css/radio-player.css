@@ -1,0 +1,204 @@
+.caverna-radio-player {
+	position: relative;
+	width: 100%;
+	max-width: 1200px;
+	margin: 2rem auto;
+	padding: 1.25rem;
+	overflow: hidden;
+	border: 1px solid rgba(255, 230, 0, 0.16);
+	border-radius: 8px;
+	background:
+		radial-gradient(circle at 14% 12%, rgba(229, 57, 53, 0.34), transparent 34%),
+		radial-gradient(circle at 92% 12%, rgba(255, 230, 0, 0.12), transparent 28%),
+		linear-gradient(135deg, #050505, #150812 58%, #2b0d0d);
+	color: #ffffff;
+	box-shadow: 0 24px 70px rgba(0, 0, 0, 0.35);
+}
+
+.caverna-radio-player::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+	background:
+		linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+		linear-gradient(0deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+	background-size: 42px 42px;
+	mask-image: linear-gradient(90deg, rgba(0, 0, 0, 0.65), transparent 78%);
+}
+
+.caverna-radio-player__content {
+	position: relative;
+	z-index: 1;
+	display: grid;
+	gap: 1.25rem;
+	align-items: center;
+}
+
+.caverna-radio-player__meta {
+	min-width: 0;
+}
+
+.caverna-radio-player__badge {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.45rem;
+	margin-bottom: 0.75rem;
+	padding: 0.4rem 0.65rem;
+	border-radius: 999px;
+	background: #e53935;
+	color: #ffffff;
+	font-size: 0.75rem;
+	font-weight: 900;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+}
+
+.caverna-radio-player__badge::before {
+	content: "";
+	width: 0.5rem;
+	height: 0.5rem;
+	border-radius: 999px;
+	background: currentColor;
+	box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.52);
+	animation: caverna-live-pulse 1.8s ease-out infinite;
+}
+
+.caverna-radio-player__title {
+	margin: 0;
+	color: #ffffff;
+	font-size: clamp(2rem, 8vw, 4rem);
+	font-weight: 900;
+	line-height: 0.95;
+	letter-spacing: 0;
+	text-transform: uppercase;
+	overflow-wrap: break-word;
+}
+
+.caverna-radio-player__subtitle,
+.caverna-radio-player__status {
+	margin: 0.45rem 0 0;
+	color: rgba(255, 255, 255, 0.78);
+	font-size: 1rem;
+	line-height: 1.45;
+}
+
+.caverna-radio-player__status {
+	color: #ffe600;
+	font-weight: 800;
+}
+
+.caverna-radio-player__link {
+	display: inline-flex;
+	margin-top: 0.85rem;
+	color: #ffe600;
+	font-weight: 800;
+	text-decoration: none;
+}
+
+.caverna-radio-player__link:visited {
+	color: #ffe600;
+}
+
+.caverna-radio-player__button {
+	display: inline-grid;
+	place-items: center;
+	width: 72px;
+	height: 72px;
+	border: 0;
+	border-radius: 999px;
+	background: #ffffff;
+	color: #111111;
+	box-shadow: 0 18px 40px rgba(0, 0, 0, 0.36);
+	cursor: pointer;
+	font-size: 1.8rem;
+	font-weight: 900;
+	line-height: 1;
+	transition: transform 0.18s ease, background 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.caverna-radio-player__button:hover,
+.caverna-radio-player__button:focus-visible {
+	transform: scale(1.05);
+}
+
+.caverna-radio-player__icon {
+	display: block;
+	width: 0;
+	height: 0;
+	margin-left: 0.25rem;
+	border-top: 0.68rem solid transparent;
+	border-bottom: 0.68rem solid transparent;
+	border-left: 1rem solid currentColor;
+}
+
+.caverna-radio-player.is-playing .caverna-radio-player__icon {
+	width: 1.1rem;
+	height: 1.25rem;
+	margin-left: 0;
+	border: 0;
+	border-right: 0.34rem solid currentColor;
+	border-left: 0.34rem solid currentColor;
+}
+
+.caverna-radio-player.is-loading .caverna-radio-player__icon {
+	width: 1.4rem;
+	height: 1.4rem;
+	margin-left: 0;
+	border: 0.2rem solid rgba(17, 17, 17, 0.22);
+	border-top-color: currentColor;
+	border-radius: 999px;
+	animation: caverna-radio-spin 0.8s linear infinite;
+}
+
+.caverna-radio-player.is-playing .caverna-radio-player__button {
+	background: #e53935;
+	color: #ffffff;
+	box-shadow: 0 18px 46px rgba(229, 57, 53, 0.32);
+}
+
+.caverna-radio-player.is-loading .caverna-radio-player__button {
+	background: #ffe600;
+	color: #111111;
+}
+
+.caverna-radio-player.has-error .caverna-radio-player__status {
+	color: #ff8a80;
+}
+
+@keyframes caverna-live-pulse {
+	0% {
+		box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.52);
+	}
+
+	70% {
+		box-shadow: 0 0 0 9px rgba(255, 255, 255, 0);
+	}
+
+	100% {
+		box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+	}
+}
+
+@keyframes caverna-radio-spin {
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+@media screen and (min-width: 42em) {
+	.caverna-radio-player {
+		padding: 1.5rem;
+	}
+
+	.caverna-radio-player__content {
+		grid-template-columns: minmax(0, 1fr) auto;
+		gap: 1.5rem;
+	}
+
+	.caverna-radio-player__button {
+		width: 84px;
+		height: 84px;
+		font-size: 2rem;
+	}
+}

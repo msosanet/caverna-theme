@@ -98,6 +98,8 @@ get_header();
 
 		wp_reset_postdata();
 
+		caverna_radio_player( array( 'class_name' => 'caverna-radio-player--home' ) );
+
 		if ( is_active_sidebar( 'ad-home-top' ) ) :
 			?>
 			<section class="home-ad content-layout">
