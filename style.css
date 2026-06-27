@@ -80,7 +80,10 @@ html {
 body {
 	margin: 0;
 	overflow-x: hidden;
-	padding-bottom: 7rem;
+}
+
+body.caverna-fixed-player-visible {
+	padding-bottom: 9rem;
 }
 
 /**

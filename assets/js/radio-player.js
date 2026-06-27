@@ -2,6 +2,11 @@
 	'use strict';
 
 	var nowPlayingTimer = null;
+	var masterAudio = null;
+	var masterReady = false;
+	var playerState = 'paused';
+	var volumeStorageKey = 'cavernaRadioVolume';
+	var visibilityReady = false;
 
 	function updateNowPlaying(data) {
 		var players = document.querySelectorAll('.caverna-radio-player');
@@ -60,10 +65,13 @@
 
 	function initRadioPlayers() {
 		var players = document.querySelectorAll('.caverna-radio-player');
-		var volumeStorageKey = 'cavernaRadioVolume';
 
 		if (!players.length) {
 			return;
+		}
+
+		function getPlayers() {
+			return Array.prototype.slice.call(document.querySelectorAll('.caverna-radio-player'));
 		}
 
 		function getStoredVolume() {
@@ -92,7 +100,35 @@
 			}
 		}
 
-		function setState(player, state, text, label) {
+		function stateText(state) {
+			if ('playing' === state) {
+				return 'Reproduciendo';
+			}
+
+			if ('loading' === state) {
+				return 'Cargando...';
+			}
+
+			if ('error' === state) {
+				return 'No se pudo reproducir';
+			}
+
+			return 'Pausado';
+		}
+
+		function stateLabel(state) {
+			if ('playing' === state) {
+				return 'Pausar Caverna Radio';
+			}
+
+			if ('loading' === state) {
+				return 'Cargando Caverna Radio';
+			}
+
+			return 'Reproducir Caverna Radio';
+		}
+
+		function setState(player, state) {
 			var button = player.querySelector('.caverna-radio-player__button');
 			var status = player.querySelector('.caverna-radio-player__status');
 
@@ -101,13 +137,21 @@
 			player.classList.toggle('has-error', 'error' === state);
 
 			if (status) {
-				status.textContent = text;
+				status.textContent = stateText(state);
 			}
 
 			if (button) {
-				button.setAttribute('aria-label', label);
+				button.setAttribute('aria-label', stateLabel(state));
 				button.setAttribute('aria-pressed', 'playing' === state ? 'true' : 'false');
 			}
+		}
+
+		function syncState(state) {
+			playerState = state;
+			getPlayers().forEach(function (player) {
+				setState(player, state);
+			});
+			updateFixedVisibility();
 		}
 
 		function applyVolume(player, volume) {
@@ -129,26 +173,96 @@
 		}
 
 		function syncVolume(volume) {
-			players.forEach(function (player) {
+			getPlayers().forEach(function (player) {
 				applyVolume(player, volume);
 			});
 		}
 
-		function pauseOtherPlayers(currentPlayer) {
-			players.forEach(function (player) {
-				var audio = player.querySelector('.caverna-radio-player__audio');
+		function getMasterAudio() {
+			var fixedAudio = document.querySelector('.caverna-radio-player--fixed .caverna-radio-player__audio');
+			var firstAudio = document.querySelector('.caverna-radio-player__audio');
 
-				if (player === currentPlayer || !audio || audio.paused) {
-					return;
-				}
+			return fixedAudio || firstAudio;
+		}
 
-				audio.pause();
-				setState(player, 'paused', 'Pausado', 'Reproducir Caverna Radio');
+		function updateFixedVisibility() {
+			var fixedPlayer = document.querySelector('.caverna-radio-player--fixed');
+			var mainPlayers = getPlayers().filter(function (player) {
+				return !player.classList.contains('caverna-radio-player--fixed');
+			});
+			var hasVisibleMain = mainPlayers.some(function (player) {
+				var rect = player.getBoundingClientRect();
+
+				return rect.bottom > 80 && rect.top < window.innerHeight - 80;
+			});
+			var shouldShow = fixedPlayer && (mainPlayers.length ? !hasVisibleMain : 'playing' === playerState || 'loading' === playerState);
+
+			if (!fixedPlayer) {
+				return;
+			}
+
+			fixedPlayer.classList.toggle('is-visible', shouldShow);
+			document.body.classList.toggle('caverna-fixed-player-visible', shouldShow);
+		}
+
+		function bindMasterAudio() {
+			if (masterReady) {
+				return;
+			}
+
+			masterAudio = getMasterAudio();
+
+			if (!masterAudio) {
+				return;
+			}
+
+			masterReady = true;
+			masterAudio.addEventListener('playing', function () {
+				syncState('playing');
+			});
+
+			masterAudio.addEventListener('pause', function () {
+				syncState('paused');
+			});
+
+			masterAudio.addEventListener('waiting', function () {
+				syncState('loading');
+			});
+
+			masterAudio.addEventListener('error', function () {
+				syncState('error');
 			});
 		}
 
-		players.forEach(function (player) {
-			var audio = player.querySelector('.caverna-radio-player__audio');
+		function togglePlayback() {
+			masterAudio = masterAudio || getMasterAudio();
+
+			if (!masterAudio) {
+				return;
+			}
+
+			if (masterAudio.paused) {
+				syncState('loading');
+				masterAudio.play().then(function () {
+					syncState('playing');
+				}).catch(function (error) {
+					syncState('error');
+
+					if (window.console && window.console.error) {
+						window.console.error('Error al reproducir Caverna Radio:', error);
+					}
+				});
+
+				return;
+			}
+
+			masterAudio.pause();
+			syncState('paused');
+		}
+
+		bindMasterAudio();
+
+		getPlayers().forEach(function (player) {
 			var button = player.querySelector('.caverna-radio-player__button');
 			var volumeRange = player.querySelector('.caverna-radio-player__volume-range');
 
@@ -173,44 +287,18 @@
 				});
 			}
 
-			button.addEventListener('click', function () {
-				if (audio.paused) {
-					pauseOtherPlayers(player);
-					setState(player, 'loading', 'Cargando...', 'Cargando Caverna Radio');
-
-					audio.play().then(function () {
-						setState(player, 'playing', 'Reproduciendo', 'Pausar Caverna Radio');
-					}).catch(function (error) {
-						setState(player, 'error', 'No se pudo reproducir', 'Reproducir Caverna Radio');
-
-						if (window.console && window.console.error) {
-							window.console.error('Error al reproducir Caverna Radio:', error);
-						}
-					});
-
-					return;
-				}
-
-				audio.pause();
-				setState(player, 'paused', 'Pausado', 'Reproducir Caverna Radio');
-			});
-
-			audio.addEventListener('playing', function () {
-				setState(player, 'playing', 'Reproduciendo', 'Pausar Caverna Radio');
-			});
-
-			audio.addEventListener('pause', function () {
-				setState(player, 'paused', 'Pausado', 'Reproducir Caverna Radio');
-			});
-
-			audio.addEventListener('waiting', function () {
-				setState(player, 'loading', 'Cargando...', 'Cargando Caverna Radio');
-			});
-
-			audio.addEventListener('error', function () {
-				setState(player, 'error', 'No se pudo reproducir', 'Reproducir Caverna Radio');
-			});
+			button.addEventListener('click', togglePlayback);
 		});
+
+		syncVolume(getStoredVolume());
+		syncState(playerState);
+
+		if (!visibilityReady) {
+			visibilityReady = true;
+			window.addEventListener('scroll', updateFixedVisibility, { passive: true });
+			window.addEventListener('resize', updateFixedVisibility);
+			document.addEventListener('caverna:page-load', updateFixedVisibility);
+		}
 
 		if (window.cavernaRadio && window.cavernaRadio.nowPlaying) {
 			updateNowPlaying(window.cavernaRadio.nowPlaying);
