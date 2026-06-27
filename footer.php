@@ -11,6 +11,8 @@
 
 ?>
 
+	</div><!-- #caverna-view -->
+
 	<footer id="colophon" class="site-footer">
 		<div class="site-info">
 			<div class="footer-brand">

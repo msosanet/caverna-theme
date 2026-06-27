@@ -1,7 +1,7 @@
 (function () {
 	'use strict';
 
-	document.addEventListener('DOMContentLoaded', function () {
+	function initRadioPlayers() {
 		var players = document.querySelectorAll('.caverna-radio-player');
 		var volumeStorageKey = 'cavernaRadioVolume';
 
@@ -95,10 +95,15 @@
 			var button = player.querySelector('.caverna-radio-player__button');
 			var volumeRange = player.querySelector('.caverna-radio-player__volume-range');
 
+			if (player.dataset.cavernaRadioReady) {
+				return;
+			}
+
 			if (!audio || !button) {
 				return;
 			}
 
+			player.dataset.cavernaRadioReady = 'true';
 			button.setAttribute('aria-pressed', 'false');
 			applyVolume(player, getStoredVolume());
 
@@ -149,5 +154,9 @@
 				setState(player, 'error', 'No se pudo reproducir', 'Reproducir Caverna Radio');
 			});
 		});
-	});
+
+	}
+
+	window.cavernaRadioPlayerInit = initRadioPlayers;
+	document.addEventListener('DOMContentLoaded', initRadioPlayers);
 }());

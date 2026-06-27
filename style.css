@@ -2942,6 +2942,18 @@ textarea:focus-visible {
 # Utilities
 --------------------------------------------------------------*/
 
+.is-ajax-loading #caverna-view {
+	opacity: 0.55;
+	pointer-events: none;
+	transition: opacity 160ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.is-ajax-loading #caverna-view {
+		transition: none;
+	}
+}
+
 /* Accessibility
 --------------------------------------------- */
 
