@@ -1584,7 +1584,7 @@ textarea:focus-visible {
 	.entry-content,
 	.comment-content,
 	.newsletter-signup__content {
-		max-width: 72vw;
+		max-width: 100%;
 		overflow-wrap: break-word;
 	}
 
@@ -1601,7 +1601,7 @@ textarea:focus-visible {
 	.page .entry-content,
 	.page .entry-content p {
 		width: 100%;
-		max-width: 66vw;
+		max-width: 100%;
 		white-space: normal;
 		overflow-wrap: break-word;
 	}
@@ -1613,7 +1613,7 @@ textarea:focus-visible {
 	}
 
 	.section-title {
-		max-width: 72vw;
+		max-width: 100%;
 		font-size: 1.35rem;
 		letter-spacing: 0.04em;
 		overflow-wrap: break-word;
@@ -1757,7 +1757,7 @@ textarea:focus-visible {
 
 	.footer-brand {
 		width: 100%;
-		max-width: 72vw;
+		max-width: 100%;
 	}
 
 	.footer-social-links {
@@ -2701,7 +2701,7 @@ textarea:focus-visible {
 	.advertising-hero h1,
 	.contact-hero h1,
 	.about-hero h1 {
-		max-width: 72vw;
+		max-width: 100%;
 		font-size: 1.75rem;
 		line-height: 1.08;
 	}
@@ -2715,7 +2715,7 @@ textarea:focus-visible {
 		.advertising-why p,
 		.advertising-cta p,
 		.newsletter-signup__content p {
-		max-width: 72vw;
+		max-width: 100%;
 		font-size: 0.98rem;
 	}
 
@@ -2724,7 +2724,7 @@ textarea:focus-visible {
 	.advertising-cta h2,
 	.contact-grid h2,
 	.newsletter-signup__content h2 {
-		max-width: 72vw;
+		max-width: 100%;
 		font-size: 1.35rem;
 		line-height: 1.08;
 	}
