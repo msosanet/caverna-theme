@@ -186,6 +186,14 @@ function caverna_scripts() {
 
 	wp_enqueue_script( 'caverna-navigation', get_template_directory_uri() . '/js/navigation.js', array(), _S_VERSION, true );
 	wp_enqueue_script( 'caverna-radio-player', get_template_directory_uri() . '/assets/js/radio-player.js', array(), _S_VERSION, true );
+	wp_localize_script(
+		'caverna-radio-player',
+		'cavernaRadio',
+		array(
+			'ajaxUrl'    => admin_url( 'admin-ajax.php' ),
+			'nowPlaying' => caverna_radio_now_playing_data(),
+		)
+	);
 	wp_enqueue_script( 'caverna-ajax-navigation', get_template_directory_uri() . '/assets/js/ajax-navigation.js', array( 'caverna-radio-player' ), _S_VERSION, true );
 
 	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
@@ -326,6 +334,245 @@ function caverna_radio_stream_url() {
 	$url = get_theme_mod( 'caverna_radio_stream_url', 'https://radio.cavernaradio.net/radio.mp3' );
 
 	return $url ? esc_url_raw( $url ) : 'https://radio.cavernaradio.net/radio.mp3';
+}
+
+/**
+ * Return the current public radio status.
+ *
+ * @return array
+ */
+function caverna_radio_now_playing_data() {
+	return array(
+		'title'    => get_option( 'caverna_now_playing_title', __( 'Caverna Radio en vivo', 'caverna' ) ),
+		'program'  => get_option( 'caverna_now_playing_program', __( 'Musica online 24/7 desde el sur', 'caverna' ) ),
+		'category' => get_option( 'caverna_now_playing_category', __( 'EN VIVO', 'caverna' ) ),
+		'artwork'  => esc_url_raw( get_option( 'caverna_now_playing_artwork', '' ) ),
+	);
+}
+
+/**
+ * AJAX endpoint for refreshing the radio status.
+ *
+ * @return void
+ */
+function caverna_ajax_now_playing() {
+	wp_send_json_success( caverna_radio_now_playing_data() );
+}
+add_action( 'wp_ajax_caverna_now_playing', 'caverna_ajax_now_playing' );
+add_action( 'wp_ajax_nopriv_caverna_now_playing', 'caverna_ajax_now_playing' );
+
+/**
+ * Register listener messages as private admin records.
+ *
+ * @return void
+ */
+function caverna_register_air_message() {
+	register_post_type(
+		'caverna_air_message',
+		array(
+			'labels'              => array(
+				'name'          => esc_html__( 'Mensajes al aire', 'caverna' ),
+				'singular_name' => esc_html__( 'Mensaje al aire', 'caverna' ),
+				'menu_name'     => esc_html__( 'Mensajes al aire', 'caverna' ),
+			),
+			'public'              => false,
+			'show_ui'             => true,
+			'show_in_menu'        => true,
+			'menu_icon'           => 'dashicons-megaphone',
+			'supports'            => array( 'title' ),
+			'capability_type'     => 'post',
+			'exclude_from_search' => true,
+		)
+	);
+}
+add_action( 'init', 'caverna_register_air_message' );
+
+/**
+ * Store radio page message submissions.
+ *
+ * @return void
+ */
+function caverna_handle_air_message() {
+	$redirect = wp_get_referer() ? wp_get_referer() : caverna_page_url( 'radio' );
+
+	if ( ! empty( $_POST['air_message_website'] ) ) {
+		wp_safe_redirect( add_query_arg( 'mensaje', 'ok', $redirect ) );
+		exit;
+	}
+
+	if ( ! isset( $_POST['caverna_air_message_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['caverna_air_message_nonce'] ) ), 'caverna_air_message' ) ) {
+		wp_safe_redirect( add_query_arg( 'mensaje', 'error', $redirect ) );
+		exit;
+	}
+
+	$name    = isset( $_POST['air_message_name'] ) ? sanitize_text_field( wp_unslash( $_POST['air_message_name'] ) ) : '';
+	$contact = isset( $_POST['air_message_contact'] ) ? sanitize_text_field( wp_unslash( $_POST['air_message_contact'] ) ) : '';
+	$type    = isset( $_POST['air_message_type'] ) ? sanitize_key( wp_unslash( $_POST['air_message_type'] ) ) : 'mensaje';
+	$message = isset( $_POST['air_message_text'] ) ? sanitize_textarea_field( wp_unslash( $_POST['air_message_text'] ) ) : '';
+
+	if ( '' === $name || '' === $message ) {
+		wp_safe_redirect( add_query_arg( 'mensaje', 'invalid', $redirect ) );
+		exit;
+	}
+
+	$type_labels = array(
+		'mensaje'  => __( 'Mensaje al aire', 'caverna' ),
+		'cancion'  => __( 'Solicitud de cancion', 'caverna' ),
+		'saludo'   => __( 'Saludo', 'caverna' ),
+		'denuncia' => __( 'Dato / denuncia', 'caverna' ),
+	);
+	$type_label  = isset( $type_labels[ $type ] ) ? $type_labels[ $type ] : $type_labels['mensaje'];
+
+	$message_id = wp_insert_post(
+		array(
+			'post_type'    => 'caverna_air_message',
+			'post_status'  => 'private',
+			'post_title'   => $type_label . ' - ' . $name,
+			'post_content' => $message,
+		)
+	);
+
+	if ( is_wp_error( $message_id ) || ! $message_id ) {
+		wp_safe_redirect( add_query_arg( 'mensaje', 'error', $redirect ) );
+		exit;
+	}
+
+	update_post_meta( $message_id, 'air_message_name', $name );
+	update_post_meta( $message_id, 'air_message_contact', $contact );
+	update_post_meta( $message_id, 'air_message_type', $type_label );
+	update_post_meta( $message_id, 'air_message_source', esc_url_raw( $redirect ) );
+	update_post_meta( $message_id, 'air_message_received', current_time( 'mysql' ) );
+
+	caverna_notify_air_message( $message_id, $name, $contact, $type_label, $message );
+
+	wp_safe_redirect( add_query_arg( 'mensaje', 'ok', $redirect ) );
+	exit;
+}
+add_action( 'admin_post_nopriv_caverna_air_message', 'caverna_handle_air_message' );
+add_action( 'admin_post_caverna_air_message', 'caverna_handle_air_message' );
+
+/**
+ * Email admins when a listener sends a radio message.
+ *
+ * @param int    $message_id Message post ID.
+ * @param string $name Listener name.
+ * @param string $contact Listener contact.
+ * @param string $type Message type.
+ * @param string $message Message body.
+ * @return void
+ */
+function caverna_notify_air_message( $message_id, $name, $contact, $type, $message ) {
+	$recipient = get_option( 'admin_email' );
+
+	if ( ! is_email( $recipient ) ) {
+		return;
+	}
+
+	$body = implode(
+		"\n",
+		array(
+			__( 'Nuevo mensaje para Caverna Radio', 'caverna' ),
+			'',
+			sprintf( __( 'Tipo: %s', 'caverna' ), $type ),
+			sprintf( __( 'Nombre: %s', 'caverna' ), $name ),
+			sprintf( __( 'Contacto: %s', 'caverna' ), $contact ? $contact : __( 'No informado', 'caverna' ) ),
+			'',
+			$message,
+			'',
+			sprintf( __( 'Ver en WordPress: %s', 'caverna' ), get_edit_post_link( $message_id, 'raw' ) ),
+		)
+	);
+
+	wp_mail( $recipient, __( 'Nuevo mensaje al aire', 'caverna' ), $body );
+}
+
+/**
+ * Customize listener message admin columns.
+ *
+ * @param array $columns Admin columns.
+ * @return array
+ */
+function caverna_air_message_columns( $columns ) {
+	return array(
+		'cb'      => $columns['cb'],
+		'title'   => esc_html__( 'Mensaje', 'caverna' ),
+		'type'    => esc_html__( 'Tipo', 'caverna' ),
+		'name'    => esc_html__( 'Nombre', 'caverna' ),
+		'contact' => esc_html__( 'Contacto', 'caverna' ),
+		'date'    => esc_html__( 'Fecha', 'caverna' ),
+	);
+}
+add_filter( 'manage_caverna_air_message_posts_columns', 'caverna_air_message_columns' );
+
+/**
+ * Render listener message admin columns.
+ *
+ * @param string $column Column key.
+ * @param int    $post_id Post ID.
+ * @return void
+ */
+function caverna_air_message_column_content( $column, $post_id ) {
+	if ( 'type' === $column ) {
+		echo esc_html( get_post_meta( $post_id, 'air_message_type', true ) );
+	}
+
+	if ( 'name' === $column ) {
+		echo esc_html( get_post_meta( $post_id, 'air_message_name', true ) );
+	}
+
+	if ( 'contact' === $column ) {
+		echo esc_html( get_post_meta( $post_id, 'air_message_contact', true ) );
+	}
+}
+add_action( 'manage_caverna_air_message_posts_custom_column', 'caverna_air_message_column_content', 10, 2 );
+
+/**
+ * Add listener message details in admin.
+ *
+ * @return void
+ */
+function caverna_air_message_add_meta_boxes() {
+	add_meta_box(
+		'caverna_air_message_details',
+		__( 'Mensaje recibido', 'caverna' ),
+		'caverna_air_message_render_details_box',
+		'caverna_air_message',
+		'normal',
+		'high'
+	);
+}
+add_action( 'add_meta_boxes_caverna_air_message', 'caverna_air_message_add_meta_boxes' );
+
+/**
+ * Render listener message details.
+ *
+ * @param WP_Post $post Message post.
+ * @return void
+ */
+function caverna_air_message_render_details_box( $post ) {
+	$fields = array(
+		__( 'Tipo', 'caverna' )     => get_post_meta( $post->ID, 'air_message_type', true ),
+		__( 'Nombre', 'caverna' )   => get_post_meta( $post->ID, 'air_message_name', true ),
+		__( 'Contacto', 'caverna' ) => get_post_meta( $post->ID, 'air_message_contact', true ),
+		__( 'Origen', 'caverna' )   => get_post_meta( $post->ID, 'air_message_source', true ),
+		__( 'Recibido', 'caverna' ) => get_post_meta( $post->ID, 'air_message_received', true ),
+	);
+	?>
+	<table class="widefat striped">
+		<tbody>
+			<?php foreach ( $fields as $label => $value ) : ?>
+				<tr>
+					<th scope="row" style="width: 180px;"><?php echo esc_html( $label ); ?></th>
+					<td><?php echo esc_html( $value ? $value : __( 'No informado', 'caverna' ) ); ?></td>
+				</tr>
+			<?php endforeach; ?>
+			<tr>
+				<th scope="row"><?php esc_html_e( 'Mensaje', 'caverna' ); ?></th>
+				<td><?php echo nl2br( esc_html( $post->post_content ) ); ?></td>
+			</tr>
+		</tbody>
+	</table>
+	<?php
 }
 
 /**
@@ -688,6 +935,143 @@ function caverna_newsletter_admin_export_link() {
 	echo '<div class="notice notice-info"><p><a class="button button-primary" href="' . esc_url( $url ) . '">' . esc_html__( 'Exportar correos CSV', 'caverna' ) . '</a></p></div>';
 }
 add_action( 'admin_notices', 'caverna_newsletter_admin_export_link' );
+
+/**
+ * Register the radio tools admin page.
+ *
+ * @return void
+ */
+function caverna_radio_tools_admin_menu() {
+	add_menu_page(
+		__( 'Herramientas de radio', 'caverna' ),
+		__( 'Radio Tools', 'caverna' ),
+		'edit_posts',
+		'caverna-radio-tools',
+		'caverna_radio_tools_page',
+		'dashicons-controls-volumeon',
+		26
+	);
+}
+add_action( 'admin_menu', 'caverna_radio_tools_admin_menu' );
+
+/**
+ * Save radio tools settings.
+ *
+ * @return void
+ */
+function caverna_save_radio_tools() {
+	if ( ! current_user_can( 'edit_posts' ) ) {
+		wp_die( esc_html__( 'No tenes permisos para editar la radio.', 'caverna' ) );
+	}
+
+	check_admin_referer( 'caverna_save_radio_tools' );
+
+	$fields = array(
+		'caverna_now_playing_title'    => 'sanitize_text_field',
+		'caverna_now_playing_program'  => 'sanitize_text_field',
+		'caverna_now_playing_category' => 'sanitize_text_field',
+		'caverna_now_playing_artwork'  => 'esc_url_raw',
+	);
+
+	foreach ( $fields as $field => $callback ) {
+		$value = isset( $_POST[ $field ] ) ? wp_unslash( $_POST[ $field ] ) : '';
+		update_option( $field, call_user_func( $callback, $value ) );
+	}
+
+	wp_safe_redirect( add_query_arg( 'updated', '1', admin_url( 'admin.php?page=caverna-radio-tools' ) ) );
+	exit;
+}
+add_action( 'admin_post_caverna_save_radio_tools', 'caverna_save_radio_tools' );
+
+/**
+ * Enqueue admin assets for the radio tools page.
+ *
+ * @param string $hook Current admin hook.
+ * @return void
+ */
+function caverna_radio_tools_admin_assets( $hook ) {
+	if ( 'toplevel_page_caverna-radio-tools' !== $hook ) {
+		return;
+	}
+
+	wp_enqueue_media();
+	wp_enqueue_script( 'caverna-radio-tools-admin', get_template_directory_uri() . '/assets/js/radio-tools-admin.js', array(), _S_VERSION, true );
+}
+add_action( 'admin_enqueue_scripts', 'caverna_radio_tools_admin_assets' );
+
+/**
+ * Render the radio tools admin page.
+ *
+ * @return void
+ */
+function caverna_radio_tools_page() {
+	$now_playing = caverna_radio_now_playing_data();
+	?>
+	<div class="wrap caverna-radio-tools">
+		<h1><?php esc_html_e( 'Herramientas de radio', 'caverna' ); ?></h1>
+
+		<?php if ( isset( $_GET['updated'] ) ) : ?>
+			<div class="notice notice-success is-dismissible"><p><?php esc_html_e( 'Estado de radio actualizado.', 'caverna' ); ?></p></div>
+		<?php endif; ?>
+
+		<div style="display: grid; gap: 24px; grid-template-columns: minmax(0, 1fr); max-width: 1120px;">
+			<section class="card" style="max-width: none;">
+				<h2><?php esc_html_e( 'Esta sonando', 'caverna' ); ?></h2>
+				<form action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" method="post">
+					<input type="hidden" name="action" value="caverna_save_radio_tools">
+					<?php wp_nonce_field( 'caverna_save_radio_tools' ); ?>
+					<table class="form-table" role="presentation">
+						<tr>
+							<th scope="row"><label for="caverna_now_playing_category"><?php esc_html_e( 'Estado', 'caverna' ); ?></label></th>
+							<td><input class="regular-text" id="caverna_now_playing_category" name="caverna_now_playing_category" value="<?php echo esc_attr( $now_playing['category'] ); ?>" placeholder="<?php esc_attr_e( 'EN VIVO', 'caverna' ); ?>"></td>
+						</tr>
+						<tr>
+							<th scope="row"><label for="caverna_now_playing_title"><?php esc_html_e( 'Tema / titulo', 'caverna' ); ?></label></th>
+							<td><input class="regular-text" id="caverna_now_playing_title" name="caverna_now_playing_title" value="<?php echo esc_attr( $now_playing['title'] ); ?>" placeholder="<?php esc_attr_e( 'Caverna Radio en vivo', 'caverna' ); ?>"></td>
+						</tr>
+						<tr>
+							<th scope="row"><label for="caverna_now_playing_program"><?php esc_html_e( 'Programa / detalle', 'caverna' ); ?></label></th>
+							<td><input class="regular-text" id="caverna_now_playing_program" name="caverna_now_playing_program" value="<?php echo esc_attr( $now_playing['program'] ); ?>" placeholder="<?php esc_attr_e( 'Musica online 24/7 desde el sur', 'caverna' ); ?>"></td>
+						</tr>
+						<tr>
+							<th scope="row"><label for="caverna_now_playing_artwork"><?php esc_html_e( 'Portada URL', 'caverna' ); ?></label></th>
+							<td>
+								<input class="regular-text" id="caverna_now_playing_artwork" name="caverna_now_playing_artwork" value="<?php echo esc_url( $now_playing['artwork'] ); ?>" placeholder="https://">
+								<button class="button" type="button" data-caverna-media-target="caverna_now_playing_artwork"><?php esc_html_e( 'Elegir imagen', 'caverna' ); ?></button>
+							</td>
+						</tr>
+					</table>
+					<?php submit_button( __( 'Actualizar estado', 'caverna' ) ); ?>
+				</form>
+			</section>
+
+			<section class="card" style="max-width: none;">
+				<h2><?php esc_html_e( 'Generador de placas para Instagram', 'caverna' ); ?></h2>
+				<div style="display: grid; gap: 20px; grid-template-columns: minmax(260px, 360px) minmax(0, 540px); align-items: start;">
+					<div>
+						<p>
+							<label for="caverna_plate_category"><strong><?php esc_html_e( 'Categoria', 'caverna' ); ?></strong></label><br>
+							<input class="widefat" id="caverna_plate_category" type="text" value="CAVERNA RADIO">
+						</p>
+						<p>
+							<label for="caverna_plate_title"><strong><?php esc_html_e( 'Titulo', 'caverna' ); ?></strong></label><br>
+							<textarea class="widefat" id="caverna_plate_title" rows="4">Nueva placa de Caverna Radio</textarea>
+						</p>
+						<p>
+							<label for="caverna_plate_image"><strong><?php esc_html_e( 'Imagen', 'caverna' ); ?></strong></label><br>
+							<input id="caverna_plate_image" type="file" accept="image/*">
+						</p>
+						<p>
+							<button class="button button-primary" type="button" id="caverna_plate_download"><?php esc_html_e( 'Descargar PNG', 'caverna' ); ?></button>
+						</p>
+					</div>
+					<canvas id="caverna_plate_canvas" width="1080" height="1080" style="width: 100%; max-width: 540px; border: 1px solid #ccd0d4; background: #050005;"></canvas>
+				</div>
+			</section>
+		</div>
+	</div>
+	<?php
+}
 
 /**
  * Render popular posts for inline home placement.

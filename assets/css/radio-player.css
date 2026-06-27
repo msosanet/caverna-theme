@@ -35,6 +35,22 @@
 	align-items: center;
 }
 
+.caverna-radio-player__artwork {
+	width: 84px;
+	aspect-ratio: 1;
+	overflow: hidden;
+	border: 1px solid rgba(255, 230, 0, 0.22);
+	border-radius: 8px;
+	background: rgba(0, 0, 0, 0.24);
+}
+
+.caverna-radio-player__artwork img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
 .caverna-radio-player__meta {
 	min-width: 0;
 }
@@ -221,7 +237,7 @@
 	}
 
 	.caverna-radio-player__content {
-		grid-template-columns: minmax(0, 1fr) auto minmax(160px, 220px);
+		grid-template-columns: auto minmax(0, 1fr) auto minmax(160px, 220px);
 		gap: 1.5rem;
 	}
 
@@ -229,5 +245,86 @@
 		width: 84px;
 		height: 84px;
 		font-size: 2rem;
+	}
+}
+
+.caverna-radio-player--fixed {
+	position: fixed;
+	right: 1rem;
+	bottom: 1rem;
+	z-index: 999;
+	width: min(520px, calc(100vw - 2rem));
+	margin: 0;
+	padding: 0.75rem;
+	border-color: rgba(240, 0, 184, 0.42);
+	box-shadow: 0 22px 60px rgba(0, 0, 0, 0.56);
+}
+
+.caverna-radio-player--fixed .caverna-radio-player__content {
+	grid-template-columns: auto minmax(0, 1fr) auto minmax(86px, 120px);
+	gap: 0.75rem;
+}
+
+.caverna-radio-player--fixed .caverna-radio-player__artwork {
+	width: 52px;
+}
+
+.caverna-radio-player--fixed .caverna-radio-player__badge,
+.caverna-radio-player--fixed .caverna-radio-player__link {
+	display: none;
+}
+
+.caverna-radio-player--fixed .caverna-radio-player__volume {
+	grid-template-columns: minmax(72px, 1fr) auto;
+	gap: 0.4rem;
+	max-width: 120px;
+}
+
+.caverna-radio-player--fixed .caverna-radio-player__volume label {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	clip: rect(1px, 1px, 1px, 1px);
+	clip-path: inset(50%);
+	white-space: nowrap;
+}
+
+.caverna-radio-player--fixed .caverna-radio-player__title {
+	font-size: 1rem;
+	line-height: 1.08;
+}
+
+.caverna-radio-player--fixed .caverna-radio-player__subtitle,
+.caverna-radio-player--fixed .caverna-radio-player__status {
+	margin-top: 0.2rem;
+	font-size: 0.8rem;
+	line-height: 1.25;
+}
+
+.caverna-radio-player--fixed .caverna-radio-player__button {
+	width: 50px;
+	height: 50px;
+	font-size: 1.25rem;
+}
+
+@media screen and (max-width: 42em) {
+	.caverna-radio-player__artwork {
+		width: 72px;
+	}
+
+	.caverna-radio-player--fixed {
+		right: 0.75rem;
+		bottom: 0.75rem;
+		width: calc(100vw - 1.5rem);
+	}
+
+	.caverna-radio-player--fixed .caverna-radio-player__content {
+		grid-template-columns: auto minmax(0, 1fr) auto;
+	}
+
+	.caverna-radio-player--fixed .caverna-radio-player__volume {
+		grid-column: 2 / -1;
+		max-width: 100%;
 	}
 }

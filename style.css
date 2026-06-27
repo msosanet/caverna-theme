@@ -80,6 +80,7 @@ html {
 body {
 	margin: 0;
 	overflow-x: hidden;
+	padding-bottom: 7rem;
 }
 
 /**
@@ -2946,6 +2947,64 @@ textarea:focus-visible {
 	opacity: 0.55;
 	pointer-events: none;
 	transition: opacity 160ms ease;
+}
+
+.radio-message {
+	align-items: start;
+}
+
+.radio-message__intro h2 {
+	margin-top: 0;
+	color: var(--color-text);
+	font-size: clamp(1.75rem, 5vw, 3rem);
+	line-height: 1;
+	text-transform: uppercase;
+}
+
+.radio-message__intro p {
+	max-width: 62ch;
+	color: var(--color-muted);
+}
+
+.radio-message__form {
+	display: grid;
+	gap: 0.85rem;
+	width: 100%;
+	max-width: 680px;
+	padding: 1rem;
+	border: 1px solid rgba(240, 0, 184, 0.28);
+	border-radius: 8px;
+	background: var(--color-surface);
+}
+
+.radio-message__form label {
+	color: var(--color-text);
+	font-weight: 800;
+}
+
+.radio-message__form input,
+.radio-message__form select,
+.radio-message__form textarea {
+	width: 100%;
+	border: 1px solid var(--color-border);
+	border-radius: 6px;
+	background: #050005;
+	color: var(--color-text);
+}
+
+.radio-message__form button {
+	width: max-content;
+	max-width: 100%;
+}
+
+.radio-message__status {
+	margin: 0;
+	color: var(--color-accent-2);
+	font-weight: 800;
+}
+
+.radio-message__status--error {
+	color: #ff8a80;
 }
 
 @media (prefers-reduced-motion: reduce) {

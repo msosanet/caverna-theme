@@ -1,6 +1,63 @@
 (function () {
 	'use strict';
 
+	var nowPlayingTimer = null;
+
+	function updateNowPlaying(data) {
+		var players = document.querySelectorAll('.caverna-radio-player');
+
+		if (!data || !players.length) {
+			return;
+		}
+
+		players.forEach(function (player) {
+			var title = player.querySelector('[data-radio-title]');
+			var program = player.querySelector('[data-radio-program]');
+			var category = player.querySelector('[data-radio-category]');
+			var artwork = player.querySelector('[data-radio-artwork]');
+
+			if (title && data.title) {
+				title.textContent = data.title;
+			}
+
+			if (program && data.program) {
+				program.textContent = data.program;
+			}
+
+			if (category && data.category) {
+				category.textContent = data.category;
+			}
+
+			if (artwork) {
+				if (data.artwork) {
+					artwork.innerHTML = '<img src="' + data.artwork + '" alt="" loading="lazy">';
+					artwork.hidden = false;
+				} else {
+					artwork.innerHTML = '';
+					artwork.hidden = true;
+				}
+			}
+		});
+	}
+
+	function refreshNowPlaying() {
+		if (!window.cavernaRadio || !window.cavernaRadio.ajaxUrl) {
+			return;
+		}
+
+		fetch(window.cavernaRadio.ajaxUrl + '?action=caverna_now_playing', {
+			credentials: 'same-origin',
+		}).then(function (response) {
+			return response.json();
+		}).then(function (payload) {
+			if (payload && payload.success) {
+				updateNowPlaying(payload.data);
+			}
+		}).catch(function () {
+			return;
+		});
+	}
+
 	function initRadioPlayers() {
 		var players = document.querySelectorAll('.caverna-radio-player');
 		var volumeStorageKey = 'cavernaRadioVolume';
@@ -155,6 +212,14 @@
 			});
 		});
 
+		if (window.cavernaRadio && window.cavernaRadio.nowPlaying) {
+			updateNowPlaying(window.cavernaRadio.nowPlaying);
+		}
+
+		if (!nowPlayingTimer) {
+			refreshNowPlaying();
+			nowPlayingTimer = window.setInterval(refreshNowPlaying, 30000);
+		}
 	}
 
 	window.cavernaRadioPlayerInit = initRadioPlayers;
