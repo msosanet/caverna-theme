@@ -97,3 +97,5 @@
 			</div>
 		<?php endif; ?>
 	</header><!-- #masthead -->
+
+	<div id="caverna-view">
