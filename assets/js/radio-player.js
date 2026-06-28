@@ -7,6 +7,7 @@
 	var playerState = 'paused';
 	var volumeStorageKey = 'cavernaRadioVolume';
 	var visibilityReady = false;
+	var fixedCollapsed = false;
 
 	function updateNowPlaying(data) {
 		var players = document.querySelectorAll('.caverna-radio-player');
@@ -196,12 +197,18 @@
 				return rect.bottom > 80 && rect.top < window.innerHeight - 80;
 			});
 			var shouldShow = fixedPlayer && (mainPlayers.length ? !hasVisibleMain : 'playing' === playerState || 'loading' === playerState);
+			var shouldShowBubble = shouldShow && fixedCollapsed;
 
 			if (!fixedPlayer) {
 				return;
 			}
 
-			fixedPlayer.classList.toggle('is-visible', shouldShow);
+			if (!shouldShow && fixedCollapsed) {
+				fixedCollapsed = false;
+			}
+
+			fixedPlayer.classList.toggle('is-visible', shouldShow && !fixedCollapsed);
+			fixedPlayer.classList.toggle('is-bubble-visible', shouldShowBubble);
 			document.body.classList.toggle('caverna-fixed-player-visible', shouldShow);
 		}
 
@@ -265,6 +272,8 @@
 		getPlayers().forEach(function (player) {
 			var button = player.querySelector('.caverna-radio-player__button');
 			var volumeRange = player.querySelector('.caverna-radio-player__volume-range');
+			var collapseButton = player.querySelector('[data-radio-collapse]');
+			var expandButton = player.querySelector('[data-radio-expand]');
 
 			if (player.dataset.cavernaRadioReady) {
 				return;
@@ -288,6 +297,20 @@
 			}
 
 			button.addEventListener('click', togglePlayback);
+
+			if (collapseButton) {
+				collapseButton.addEventListener('click', function () {
+					fixedCollapsed = true;
+					updateFixedVisibility();
+				});
+			}
+
+			if (expandButton) {
+				expandButton.addEventListener('click', function () {
+					fixedCollapsed = false;
+					updateFixedVisibility();
+				});
+			}
 		});
 
 		syncVolume(getStoredVolume());

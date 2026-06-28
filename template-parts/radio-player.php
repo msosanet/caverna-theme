@@ -10,9 +10,17 @@ $class_name = isset( $args['class_name'] ) ? sanitize_html_class( $args['class_n
 $radio_page = get_page_by_path( 'radio' );
 $volume_id  = wp_unique_id( 'caverna-radio-volume-' );
 $now        = caverna_radio_now_playing_data();
+$is_fixed   = false !== strpos( $class_name, 'caverna-radio-player--fixed' );
 ?>
 
 <section class="caverna-radio-player <?php echo esc_attr( $class_name ); ?>" data-stream-url="<?php echo esc_url( $stream_url ); ?>" aria-label="<?php esc_attr_e( 'Caverna Radio en vivo', 'caverna' ); ?>">
+	<?php if ( $is_fixed ) : ?>
+		<button class="caverna-radio-player__collapse" type="button" aria-label="<?php esc_attr_e( 'Minimizar reproductor', 'caverna' ); ?>" data-radio-collapse>&times;</button>
+		<button class="caverna-radio-player__bubble" type="button" aria-label="<?php esc_attr_e( 'Abrir reproductor de Caverna Radio', 'caverna' ); ?>" data-radio-expand>
+			<?php caverna_header_logo_markup(); ?>
+		</button>
+	<?php endif; ?>
+
 	<div class="caverna-radio-player__content">
 		<div class="caverna-radio-player__artwork" data-radio-artwork <?php echo empty( $now['artwork'] ) ? 'hidden' : ''; ?>>
 			<?php if ( ! empty( $now['artwork'] ) ) : ?>
