@@ -15,7 +15,9 @@ $is_fixed   = false !== strpos( $class_name, 'caverna-radio-player--fixed' );
 
 <section class="caverna-radio-player <?php echo esc_attr( $class_name ); ?>" data-stream-url="<?php echo esc_url( $stream_url ); ?>" aria-label="<?php esc_attr_e( 'Caverna Radio en vivo', 'caverna' ); ?>">
 	<?php if ( $is_fixed ) : ?>
-		<button class="caverna-radio-player__collapse" type="button" aria-label="<?php esc_attr_e( 'Minimizar reproductor', 'caverna' ); ?>" data-radio-collapse>&times;</button>
+		<button class="caverna-radio-player__collapse" type="button" aria-label="<?php esc_attr_e( 'Minimizar reproductor', 'caverna' ); ?>" data-radio-collapse>
+			<span aria-hidden="true"></span>
+		</button>
 		<button class="caverna-radio-player__bubble" type="button" aria-label="<?php esc_attr_e( 'Abrir reproductor de Caverna Radio', 'caverna' ); ?>" data-radio-expand>
 			<?php caverna_header_logo_markup(); ?>
 		</button>
