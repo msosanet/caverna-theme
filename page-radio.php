@@ -19,6 +19,80 @@ get_header();
 			<?php caverna_radio_player( array( 'class_name' => 'caverna-radio-player--page' ) ); ?>
 		</div>
 
+		<section class="radio-schedule content-layout" aria-labelledby="radio-schedule-title">
+			<div class="radio-schedule__header">
+				<div>
+					<p class="advertising-kicker"><?php esc_html_e( 'Programacion', 'caverna' ); ?></p>
+					<h2 id="radio-schedule-title"><?php esc_html_e( 'Grilla de podcasts', 'caverna' ); ?></h2>
+					<p><?php esc_html_e( 'Este sera el espacio para los programas que graben su podcast con Caverna Radio. Por ahora estamos abriendo la grilla.', 'caverna' ); ?></p>
+				</div>
+			</div>
+
+			<div class="radio-schedule__grid">
+				<article class="radio-schedule__slot radio-schedule__slot--open">
+					<span><?php esc_html_e( 'Lunes', 'caverna' ); ?></span>
+					<h3><?php esc_html_e( 'Espacio disponible', 'caverna' ); ?></h3>
+					<p><?php esc_html_e( 'Un podcast semanal de una hora para iniciar la semana con identidad propia.', 'caverna' ); ?></p>
+				</article>
+				<article class="radio-schedule__slot radio-schedule__slot--open">
+					<span><?php esc_html_e( 'Miercoles', 'caverna' ); ?></span>
+					<h3><?php esc_html_e( 'Espacio disponible', 'caverna' ); ?></h3>
+					<p><?php esc_html_e( 'Entrevistas, cultura, comunidad, politica local o el formato que estes pensando.', 'caverna' ); ?></p>
+				</article>
+				<article class="radio-schedule__slot radio-schedule__slot--open">
+					<span><?php esc_html_e( 'Viernes', 'caverna' ); ?></span>
+					<h3><?php esc_html_e( 'Espacio disponible', 'caverna' ); ?></h3>
+					<p><?php esc_html_e( 'Cierre de semana para proyectos, marcas, colectivos o creadores independientes.', 'caverna' ); ?></p>
+				</article>
+			</div>
+		</section>
+
+		<section class="podcast-studio content-layout" aria-labelledby="podcast-studio-title">
+			<div class="podcast-studio__copy">
+				<p class="advertising-kicker"><?php esc_html_e( 'Estudio podcast', 'caverna' ); ?></p>
+				<h2 id="podcast-studio-title"><?php esc_html_e( 'Graba tu podcast con nosotros', 'caverna' ); ?></h2>
+				<p><?php esc_html_e( 'Sumate a la grilla de Caverna Radio con un espacio mensual de grabacion. Ideal para programas, entrevistas, columnas, ciclos culturales, proyectos comerciales o contenidos independientes.', 'caverna' ); ?></p>
+			</div>
+
+			<div class="podcast-studio__price" aria-label="<?php esc_attr_e( 'Precio de grabacion de podcast', 'caverna' ); ?>">
+				<span><?php esc_html_e( 'Plan mensual', 'caverna' ); ?></span>
+				<strong>$100.000 ARS</strong>
+				<p><?php esc_html_e( 'Incluye 4 horas de grabacion mensual: 1 hora por semana.', 'caverna' ); ?></p>
+				<small><?php esc_html_e( 'Valor de referencia: $25.000 ARS la hora.', 'caverna' ); ?></small>
+			</div>
+
+			<form class="podcast-studio__form" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" method="post">
+				<input type="hidden" name="action" value="caverna_podcast_inquiry">
+				<?php wp_nonce_field( 'caverna_podcast_inquiry', 'caverna_podcast_nonce' ); ?>
+
+				<label for="podcast_name"><?php esc_html_e( 'Nombre', 'caverna' ); ?></label>
+				<input id="podcast_name" type="text" name="podcast_name" placeholder="<?php esc_attr_e( 'Tu nombre o equipo', 'caverna' ); ?>" required>
+
+				<label for="podcast_contact"><?php esc_html_e( 'Contacto', 'caverna' ); ?></label>
+				<input id="podcast_contact" type="text" name="podcast_contact" placeholder="<?php esc_attr_e( 'WhatsApp, Instagram o email', 'caverna' ); ?>" required>
+
+				<label for="podcast_project"><?php esc_html_e( 'Nombre del podcast o idea', 'caverna' ); ?></label>
+				<input id="podcast_project" type="text" name="podcast_project" placeholder="<?php esc_attr_e( 'Ej: Voces del sur', 'caverna' ); ?>" required>
+
+				<label for="podcast_message"><?php esc_html_e( 'Contanos brevemente la idea', 'caverna' ); ?></label>
+				<textarea id="podcast_message" name="podcast_message" rows="5" placeholder="<?php esc_attr_e( 'Tema, formato, invitados, horarios posibles...', 'caverna' ); ?>"></textarea>
+
+				<label class="newsletter-hp" for="podcast_website"><?php esc_html_e( 'Sitio web', 'caverna' ); ?></label>
+				<input class="newsletter-hp" id="podcast_website" type="text" name="podcast_website" tabindex="-1" autocomplete="off">
+
+				<button type="submit"><?php esc_html_e( 'Consultar por grabacion', 'caverna' ); ?></button>
+
+				<?php
+				$podcast_status = isset( $_GET['podcast'] ) ? sanitize_key( wp_unslash( $_GET['podcast'] ) ) : '';
+				if ( 'ok' === $podcast_status ) :
+					?>
+					<p class="podcast-studio__status"><?php esc_html_e( 'Consulta enviada. Te vamos a contactar para coordinar.', 'caverna' ); ?></p>
+				<?php elseif ( $podcast_status ) : ?>
+					<p class="podcast-studio__status podcast-studio__status--error"><?php esc_html_e( 'No pudimos enviar la consulta. Revisala e intenta otra vez.', 'caverna' ); ?></p>
+				<?php endif; ?>
+			</form>
+		</section>
+
 		<section class="radio-message content-layout content-layout--narrow" aria-labelledby="radio-message-title">
 			<div class="radio-message__intro">
 				<p class="advertising-kicker"><?php esc_html_e( 'Participa', 'caverna' ); ?></p>

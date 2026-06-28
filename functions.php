@@ -576,6 +576,215 @@ function caverna_air_message_render_details_box( $post ) {
 }
 
 /**
+ * Register podcast recording inquiries as private admin records.
+ *
+ * @return void
+ */
+function caverna_register_podcast_inquiry() {
+	register_post_type(
+		'caverna_podcast_lead',
+		array(
+			'labels'              => array(
+				'name'          => esc_html__( 'Consultas podcast', 'caverna' ),
+				'singular_name' => esc_html__( 'Consulta podcast', 'caverna' ),
+				'menu_name'     => esc_html__( 'Podcast leads', 'caverna' ),
+			),
+			'public'              => false,
+			'show_ui'             => true,
+			'show_in_menu'        => true,
+			'menu_icon'           => 'dashicons-microphone',
+			'supports'            => array( 'title' ),
+			'capability_type'     => 'post',
+			'exclude_from_search' => true,
+		)
+	);
+}
+add_action( 'init', 'caverna_register_podcast_inquiry' );
+
+/**
+ * Store podcast recording inquiries.
+ *
+ * @return void
+ */
+function caverna_handle_podcast_inquiry() {
+	$redirect = wp_get_referer() ? wp_get_referer() : caverna_page_url( 'radio' );
+
+	if ( ! empty( $_POST['podcast_website'] ) ) {
+		wp_safe_redirect( add_query_arg( 'podcast', 'ok', $redirect ) );
+		exit;
+	}
+
+	if ( ! isset( $_POST['caverna_podcast_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['caverna_podcast_nonce'] ) ), 'caverna_podcast_inquiry' ) ) {
+		wp_safe_redirect( add_query_arg( 'podcast', 'error', $redirect ) );
+		exit;
+	}
+
+	$name    = isset( $_POST['podcast_name'] ) ? sanitize_text_field( wp_unslash( $_POST['podcast_name'] ) ) : '';
+	$contact = isset( $_POST['podcast_contact'] ) ? sanitize_text_field( wp_unslash( $_POST['podcast_contact'] ) ) : '';
+	$project = isset( $_POST['podcast_project'] ) ? sanitize_text_field( wp_unslash( $_POST['podcast_project'] ) ) : '';
+	$message = isset( $_POST['podcast_message'] ) ? sanitize_textarea_field( wp_unslash( $_POST['podcast_message'] ) ) : '';
+
+	if ( '' === $name || '' === $contact || '' === $project ) {
+		wp_safe_redirect( add_query_arg( 'podcast', 'invalid', $redirect ) );
+		exit;
+	}
+
+	$lead_id = wp_insert_post(
+		array(
+			'post_type'    => 'caverna_podcast_lead',
+			'post_status'  => 'private',
+			'post_title'   => $project . ' - ' . $name,
+			'post_content' => $message,
+		)
+	);
+
+	if ( is_wp_error( $lead_id ) || ! $lead_id ) {
+		wp_safe_redirect( add_query_arg( 'podcast', 'error', $redirect ) );
+		exit;
+	}
+
+	update_post_meta( $lead_id, 'podcast_name', $name );
+	update_post_meta( $lead_id, 'podcast_contact', $contact );
+	update_post_meta( $lead_id, 'podcast_project', $project );
+	update_post_meta( $lead_id, 'podcast_source', esc_url_raw( $redirect ) );
+	update_post_meta( $lead_id, 'podcast_received', current_time( 'mysql' ) );
+	update_post_meta( $lead_id, 'podcast_plan', '$100.000 ARS mensual / 4 horas - $25.000 ARS por hora' );
+
+	caverna_notify_podcast_inquiry( $lead_id, $name, $contact, $project, $message );
+
+	wp_safe_redirect( add_query_arg( 'podcast', 'ok', $redirect ) );
+	exit;
+}
+add_action( 'admin_post_nopriv_caverna_podcast_inquiry', 'caverna_handle_podcast_inquiry' );
+add_action( 'admin_post_caverna_podcast_inquiry', 'caverna_handle_podcast_inquiry' );
+
+/**
+ * Email admins when a podcast inquiry is submitted.
+ *
+ * @param int    $lead_id Lead post ID.
+ * @param string $name Sender name.
+ * @param string $contact Sender contact.
+ * @param string $project Project name.
+ * @param string $message Notes.
+ * @return void
+ */
+function caverna_notify_podcast_inquiry( $lead_id, $name, $contact, $project, $message ) {
+	$recipient = get_option( 'admin_email' );
+
+	if ( ! is_email( $recipient ) ) {
+		return;
+	}
+
+	$body = implode(
+		"\n",
+		array(
+			__( 'Nueva consulta para grabar podcast en Caverna Radio', 'caverna' ),
+			'',
+			sprintf( __( 'Proyecto: %s', 'caverna' ), $project ),
+			sprintf( __( 'Nombre: %s', 'caverna' ), $name ),
+			sprintf( __( 'Contacto: %s', 'caverna' ), $contact ),
+			sprintf( __( 'Plan: %s', 'caverna' ), '$100.000 ARS mensual / 4 horas - $25.000 ARS por hora' ),
+			'',
+			$message ? $message : __( 'Sin comentarios adicionales.', 'caverna' ),
+			'',
+			sprintf( __( 'Ver en WordPress: %s', 'caverna' ), get_edit_post_link( $lead_id, 'raw' ) ),
+		)
+	);
+
+	wp_mail( $recipient, __( 'Nueva consulta de podcast', 'caverna' ), $body );
+}
+
+/**
+ * Customize podcast inquiry admin columns.
+ *
+ * @param array $columns Admin columns.
+ * @return array
+ */
+function caverna_podcast_inquiry_columns( $columns ) {
+	return array(
+		'cb'      => $columns['cb'],
+		'title'   => esc_html__( 'Proyecto', 'caverna' ),
+		'name'    => esc_html__( 'Nombre', 'caverna' ),
+		'contact' => esc_html__( 'Contacto', 'caverna' ),
+		'plan'    => esc_html__( 'Plan', 'caverna' ),
+		'date'    => esc_html__( 'Fecha', 'caverna' ),
+	);
+}
+add_filter( 'manage_caverna_podcast_lead_posts_columns', 'caverna_podcast_inquiry_columns' );
+
+/**
+ * Render podcast inquiry admin columns.
+ *
+ * @param string $column Column key.
+ * @param int    $post_id Post ID.
+ * @return void
+ */
+function caverna_podcast_inquiry_column_content( $column, $post_id ) {
+	if ( 'name' === $column ) {
+		echo esc_html( get_post_meta( $post_id, 'podcast_name', true ) );
+	}
+
+	if ( 'contact' === $column ) {
+		echo esc_html( get_post_meta( $post_id, 'podcast_contact', true ) );
+	}
+
+	if ( 'plan' === $column ) {
+		echo esc_html( get_post_meta( $post_id, 'podcast_plan', true ) );
+	}
+}
+add_action( 'manage_caverna_podcast_lead_posts_custom_column', 'caverna_podcast_inquiry_column_content', 10, 2 );
+
+/**
+ * Add podcast inquiry details in admin.
+ *
+ * @return void
+ */
+function caverna_podcast_inquiry_add_meta_boxes() {
+	add_meta_box(
+		'caverna_podcast_inquiry_details',
+		__( 'Consulta para podcast', 'caverna' ),
+		'caverna_podcast_inquiry_render_details_box',
+		'caverna_podcast_lead',
+		'normal',
+		'high'
+	);
+}
+add_action( 'add_meta_boxes_caverna_podcast_lead', 'caverna_podcast_inquiry_add_meta_boxes' );
+
+/**
+ * Render podcast inquiry details.
+ *
+ * @param WP_Post $post Inquiry post.
+ * @return void
+ */
+function caverna_podcast_inquiry_render_details_box( $post ) {
+	$fields = array(
+		__( 'Proyecto', 'caverna' ) => get_post_meta( $post->ID, 'podcast_project', true ),
+		__( 'Nombre', 'caverna' )   => get_post_meta( $post->ID, 'podcast_name', true ),
+		__( 'Contacto', 'caverna' ) => get_post_meta( $post->ID, 'podcast_contact', true ),
+		__( 'Plan', 'caverna' )     => get_post_meta( $post->ID, 'podcast_plan', true ),
+		__( 'Origen', 'caverna' )   => get_post_meta( $post->ID, 'podcast_source', true ),
+		__( 'Recibido', 'caverna' ) => get_post_meta( $post->ID, 'podcast_received', true ),
+	);
+	?>
+	<table class="widefat striped">
+		<tbody>
+			<?php foreach ( $fields as $label => $value ) : ?>
+				<tr>
+					<th scope="row" style="width: 180px;"><?php echo esc_html( $label ); ?></th>
+					<td><?php echo esc_html( $value ? $value : __( 'No informado', 'caverna' ) ); ?></td>
+				</tr>
+			<?php endforeach; ?>
+			<tr>
+				<th scope="row"><?php esc_html_e( 'Comentarios', 'caverna' ); ?></th>
+				<td><?php echo nl2br( esc_html( $post->post_content ? $post->post_content : __( 'Sin comentarios adicionales.', 'caverna' ) ) ); ?></td>
+			</tr>
+		</tbody>
+	</table>
+	<?php
+}
+
+/**
  * Register newsletter subscribers in the admin.
  *
  * @return void
