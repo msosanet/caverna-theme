@@ -270,7 +270,7 @@
 				return;
 			}
 
-			if (!audio || !button) {
+			if (!button) {
 				return;
 			}
 
