@@ -53,6 +53,7 @@
 
 .caverna-radio-player__meta {
 	min-width: 0;
+	max-width: 680px;
 }
 
 .caverna-radio-player__badge {
@@ -83,12 +84,35 @@
 .caverna-radio-player__title {
 	margin: 0;
 	color: #ffffff;
-	font-size: clamp(2rem, 8vw, 4rem);
+	font-size: clamp(2rem, 5.2vw, 4rem);
 	font-weight: 900;
 	line-height: 0.95;
 	letter-spacing: 0;
 	text-transform: uppercase;
 	overflow-wrap: break-word;
+}
+
+.caverna-radio-player__controls {
+	display: flex;
+	gap: 1.25rem;
+	align-items: center;
+	justify-content: flex-end;
+	min-width: 0;
+}
+
+@media screen and (max-width: 41.9375em) {
+	.caverna-radio-player__content {
+		grid-template-columns: auto minmax(0, 1fr);
+	}
+
+	.caverna-radio-player__controls {
+		grid-column: 1 / -1;
+		justify-content: space-between;
+	}
+
+	.caverna-radio-player__title {
+		font-size: clamp(1.8rem, 10vw, 3rem);
+	}
 }
 
 .caverna-radio-player__subtitle,
@@ -237,8 +261,8 @@
 	}
 
 	.caverna-radio-player__content {
-		grid-template-columns: auto minmax(0, 1fr) auto minmax(160px, 220px);
-		gap: 1.5rem;
+		grid-template-columns: auto minmax(0, 1fr) minmax(280px, 420px);
+		gap: clamp(1.5rem, 5vw, 4rem);
 	}
 
 	.caverna-radio-player__button {
@@ -271,7 +295,7 @@
 }
 
 .caverna-radio-player--fixed .caverna-radio-player__content {
-	grid-template-columns: auto minmax(0, 1fr) auto minmax(140px, 200px);
+	grid-template-columns: auto minmax(0, 1fr) minmax(240px, 330px);
 	gap: 1rem;
 }
 
@@ -294,6 +318,10 @@
 	gap: 0.45rem;
 	max-width: 200px;
 	font-size: 0.72rem;
+}
+
+.caverna-radio-player--fixed .caverna-radio-player__controls {
+	gap: 0.8rem;
 }
 
 .caverna-radio-player--fixed .caverna-radio-player__title {
@@ -345,8 +373,11 @@
 	}
 
 	.caverna-radio-player--fixed .caverna-radio-player__volume {
-		grid-column: 1 / -1;
 		grid-template-columns: auto minmax(0, 1fr) auto;
 		max-width: 100%;
+	}
+
+	.caverna-radio-player--fixed .caverna-radio-player__controls {
+		display: contents;
 	}
 }

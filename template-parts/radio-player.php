@@ -29,14 +29,16 @@ $now        = caverna_radio_now_playing_data();
 			<?php endif; ?>
 		</div>
 
-		<button class="caverna-radio-player__button" type="button" aria-label="<?php esc_attr_e( 'Reproducir Caverna Radio', 'caverna' ); ?>">
-			<span class="caverna-radio-player__icon" aria-hidden="true"></span>
-		</button>
+		<div class="caverna-radio-player__controls">
+			<button class="caverna-radio-player__button" type="button" aria-label="<?php esc_attr_e( 'Reproducir Caverna Radio', 'caverna' ); ?>">
+				<span class="caverna-radio-player__icon" aria-hidden="true"></span>
+			</button>
 
-		<div class="caverna-radio-player__volume">
-			<label for="<?php echo esc_attr( $volume_id ); ?>"><?php esc_html_e( 'Volumen', 'caverna' ); ?></label>
-			<input id="<?php echo esc_attr( $volume_id ); ?>" class="caverna-radio-player__volume-range" type="range" min="0" max="100" step="1" value="80" aria-label="<?php esc_attr_e( 'Volumen de Caverna Radio', 'caverna' ); ?>">
-			<span class="caverna-radio-player__volume-value" aria-hidden="true">80%</span>
+			<div class="caverna-radio-player__volume">
+				<label for="<?php echo esc_attr( $volume_id ); ?>"><?php esc_html_e( 'Volumen', 'caverna' ); ?></label>
+				<input id="<?php echo esc_attr( $volume_id ); ?>" class="caverna-radio-player__volume-range" type="range" min="0" max="100" step="1" value="80" aria-label="<?php esc_attr_e( 'Volumen de Caverna Radio', 'caverna' ); ?>">
+				<span class="caverna-radio-player__volume-value" aria-hidden="true">80%</span>
+			</div>
 		</div>
 	</div>
 
